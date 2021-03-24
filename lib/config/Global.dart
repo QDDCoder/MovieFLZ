@@ -25,12 +25,12 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:movie_flz/config/NetTools.dart';
 import 'package:movie_flz/modle/CacheConfig.dart';
 import 'package:movie_flz/modle/Profile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'CacheObject.dart';
-import 'Git.dart';
 
 const _themes = <MaterialColor>[
   Colors.blue,
@@ -71,7 +71,7 @@ class Global {
       ..maxCount = 100;
 
     //初始化网络请求相关配置
-    Git.init();
+    NetTools.init();
   }
 
   // 持久化Profile信息

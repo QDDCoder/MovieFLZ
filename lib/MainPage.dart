@@ -24,6 +24,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:movie_flz/routes/home/view.dart';
+import 'package:movie_flz/routes/look/view.dart';
 import 'package:movie_flz/routes/user_center/view.dart';
 
 class MainPage extends StatefulWidget {
@@ -33,7 +34,7 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   //页面信息
-  final pages = [HomePage(), UserCenterPage()];
+  final pages = [HomePage(), LookPage(), UserCenterPage()];
   //当前的页面
   int _current_select = 0;
 
@@ -42,21 +43,6 @@ class _MainPageState extends State<MainPage> {
     return Scaffold(
       body: pages[_current_select],
       bottomNavigationBar: _buildBottomNavigator(),
-    );
-  }
-
-  // 中间的组件
-  _buildBody() {
-    return Center(
-      child: RaisedButton(
-        onPressed: () {
-          Get.to(UserCenterPage());
-          // var locale = Locale('en_US', 'en_zh');
-          // Get.updateLocale(locale);
-          // Get.changeTheme(ThemeData(primarySwatch: Global.themes[1]));
-        },
-        child: Text('测试'),
-      ),
     );
   }
 
@@ -70,6 +56,7 @@ class _MainPageState extends State<MainPage> {
       // 底部导航
       items: <BottomNavigationBarItem>[
         BottomNavigationBarItem(icon: Icon(Icons.home), title: Text('home'.tr)),
+        BottomNavigationBarItem(icon: Icon(Icons.person), title: Text('kl'.tr)),
         BottomNavigationBarItem(
             icon: Icon(Icons.person), title: Text('center'.tr)),
       ],

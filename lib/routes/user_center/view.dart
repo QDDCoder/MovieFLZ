@@ -12,6 +12,14 @@ class UserCenterPage extends StatelessWidget {
       appBar: AppBar(
         title: Text('个人中心'),
       ),
+      body: Center(
+        child: TextButton(
+          onPressed: () {
+            logic.toJumpSetting();
+          },
+          child: Text('点击'),
+        ),
+      ),
     );
   }
 }

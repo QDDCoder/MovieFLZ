@@ -26,13 +26,27 @@ import 'package:get/get.dart';
 class Messages extends Translations {
   @override
   Map<String, Map<String, String>> get keys => {
-        'en_US': {
-          'home': 'home',
-          'center': 'center',
-        },
         'en_zh': {
           'home': '首页',
-          'center': '用户中心',
-        }
+          'center': '我的',
+          'kl': '快看',
+          'setting': '设置',
+          'cl': '修改语言',
+          'ct': '修改主题',
+          'cn': '中文',
+          'us': '英文',
+          'cle': '取消',
+        },
+        'en_US': {
+          'home': 'Home',
+          'center': 'Center',
+          'kl': 'Look',
+          'setting': 'Setting',
+          'cl': 'ChangeLanguage',
+          'ct': 'ChangeTheme',
+          'cn': 'Chinese',
+          'us': 'English',
+          'cle': 'Cancle',
+        },
       };
 }
