@@ -32,6 +32,7 @@ dependencies:
   dio:
   shared_preferences:
   fluttertoast:
+  flutter_screenutil:
 
 dev_dependencies:
   flutter_test:
