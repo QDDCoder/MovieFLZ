@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
+import 'home_movie/view.dart';
 import 'logic.dart';
 
 class HomePage extends StatefulWidget {
@@ -26,33 +27,66 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Obx(() {
-      return Scaffold(
-        appBar: AppBar(
-          elevation: 0.0,
-          titleSpacing: 0.0,
-          backgroundColor: Colors.transparent,
-          toolbarHeight:
-              ScreenUtil().statusBarHeight + ScreenUtil().setHeight(44),
-          bottom: buildTabBar(),
-          flexibleSpace: _build_custom_appbar(),
-          // title: buildTopAppBar(),
-        ),
-        body: getTabView(),
+      return Stack(
+        children: [
+          //最底层的tabView
+          getTabView(),
+          //顶层Appbar
+          _build_App_Bar(),
+          //顶层tabbar
+          buildTabBar(),
+        ],
       );
     });
+  }
+
+  /**
+   * 创建AppBar
+   */
+  _build_App_Bar() {
+    return Container(
+      height: ScreenUtil().statusBarHeight + ScreenUtil().setHeight(76),
+      child: AppBar(
+        primary: false,
+        elevation: 0.0,
+        titleSpacing: 0.0,
+        backgroundColor: Colors.transparent,
+        toolbarHeight:
+            ScreenUtil().statusBarHeight + ScreenUtil().setHeight(44),
+        flexibleSpace: _build_custom_appbar(),
+      ),
+    );
   }
 
   /**
    * 创建TabBar
    */
   buildTabBar() {
-    return TabBar(
-      indicatorColor: Colors.white,
-      indicatorSize: TabBarIndicatorSize.label,
-      indicatorWeight: 4,
-      isScrollable: true,
-      controller: tabController,
-      tabs: getTab(),
+    //去除TabBar点击水波纹效果
+    return PreferredSize(
+      preferredSize: Size(0, ScreenUtil().setHeight(44)),
+      child: Container(
+        padding: EdgeInsets.only(
+            top: ScreenUtil().statusBarHeight + ScreenUtil().setHeight(44)),
+        child: Theme(
+          data: ThemeData(
+            //默认显示的背景颜色
+            backgroundColor: Colors.transparent,
+            //点击的背景高亮颜色
+            highlightColor: Colors.transparent,
+            //点击水波纹颜色
+            splashColor: Colors.transparent,
+          ),
+          child: TabBar(
+            indicatorColor: Colors.transparent,
+            indicatorSize: TabBarIndicatorSize.label,
+            indicatorWeight: 3,
+            isScrollable: true,
+            controller: tabController,
+            tabs: getTab(),
+          ),
+        ),
+      ),
     );
   }
 
@@ -74,13 +108,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
    *创建TabBarView
    */
   getTabView() {
-    return TabBarView(
-      controller: tabController,
-      children: logic.topCategory.value.filmTelevsionList.map((e) {
-        return Center(
-          child: Text('${e.name}'),
-        );
-      }).toList(),
+    return Container(
+      margin: EdgeInsets.only(
+          top: ScreenUtil().statusBarHeight + ScreenUtil().setHeight(8)),
+      child: TabBarView(
+        controller: tabController,
+        children: logic.topCategory.value.filmTelevsionList.map((e) {
+          return HomeMoviePage();
+        }).toList(),
+      ),
     );
   }
 
@@ -102,28 +138,29 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
    * 设置Appbar的样式
    */
   _build_custom_appbar() {
-    return Positioned.fill(
-      child: Stack(
-        children: [
-          //背景色
-          buildAppBarGB(),
-          //顶部工具栏
-          buildTopAppBar(),
-        ],
-      ),
+    return Stack(
+      children: [
+        //背景色
+        buildAppBarGB(),
+        //顶部工具栏
+        buildTopAppBar(),
+      ],
     );
   }
 
+  /**
+   * appBar的背景
+   */
   buildAppBarGB() {
     return Container(
-      // height: ScreenUtil().statusBarHeight + ScreenUtil().setHeight(100),
+      height: ScreenUtil().statusBarHeight + ScreenUtil().setHeight(76),
       decoration: BoxDecoration(
         boxShadow: [
           //阴影
           BoxShadow(
-              color: Colors.indigo,
+              color: Colors.indigo.withOpacity(0.98),
               offset: Offset(0.0, 0.0),
-              blurRadius: 14,
+              blurRadius: 18,
               spreadRadius: 20)
         ],
         gradient: LinearGradient(colors: [
@@ -134,6 +171,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
+  /**
+   * AppBar 上面的工具条
+   */
   buildTopAppBar() {
     return Container(
       margin: EdgeInsets.only(top: ScreenUtil().statusBarHeight - 4),
@@ -152,47 +192,89 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
+  /**
+   * 左侧的logo
+   */
   buildLogo() {
-    return FlutterLogo(
-      size: 34,
+    return Padding(
+      padding: EdgeInsets.only(left: ScreenUtil().setWidth(16)),
+      child: FlutterLogo(
+        size: 34,
+      ),
     );
   }
 
+  /**
+   * 右侧的下载按钮
+   */
   buildRightDowlod() {
     return Container(
       margin: EdgeInsets.only(
           right: ScreenUtil().setWidth(14), left: ScreenUtil().setWidth(14)),
       child: Icon(
         Icons.arrow_circle_down_sharp,
+        color: Colors.white70,
         size: ScreenUtil().setWidth(50),
       ),
     );
   }
 
+  /**
+   * 右侧的历史按钮
+   */
   buildRightHistory() {
     return Container(
       margin: EdgeInsets.only(right: ScreenUtil().setWidth(14)),
       child: Icon(
         Icons.history_sharp,
+        color: Colors.white70,
         size: ScreenUtil().setWidth(50),
       ),
     );
   }
 
+  /**
+   * 搜索条
+   */
   buildCenterSS() {
     return Expanded(
       child: Container(
         alignment: Alignment.center,
-        height: ScreenUtil().setWidth(60),
+        height: ScreenUtil().setHeight(44),
         decoration: BoxDecoration(
             color: Colors.black38.withOpacity(0.2),
             borderRadius: BorderRadius.circular(ScreenUtil().setWidth(60))),
         margin: EdgeInsets.only(
           left: 10,
         ),
-        child: Text('123'),
-        // color: Colors.redAccent,
+        child: _build_search_info(),
       ),
+    );
+  }
+
+  /**
+   * 搜索条
+   */
+  _build_search_info() {
+    return Row(
+      children: [
+        Padding(
+          padding: EdgeInsets.only(
+              left: ScreenUtil().setWidth(16),
+              right: ScreenUtil().setWidth(10)),
+          child: Icon(
+            Icons.search,
+            size: 24,
+            color: Colors.white70,
+          ),
+        ),
+        Text(
+          '搜索',
+          style: TextStyle(
+            color: Colors.white70,
+          ),
+        )
+      ],
     );
   }
 }

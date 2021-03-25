@@ -33,6 +33,7 @@ dependencies:
   shared_preferences:
   fluttertoast:
   flutter_screenutil:
+  flutter_swiper:
 
 dev_dependencies:
   flutter_test:
