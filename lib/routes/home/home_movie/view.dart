@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:get/get.dart';
 
+import 'Model/HomeMovieModel.dart';
 import 'logic.dart';
 
 class HomeMoviePage extends StatefulWidget {
@@ -32,15 +33,6 @@ class _HomeMoviePageState extends State<HomeMoviePage> {
             _build_list_movie_info(),
           ],
         ),
-
-        //     Column(
-        //   children: [
-        //     //创建轮播图
-        //     _build_swiper_widget(),
-        //     //创建猜你喜欢
-        //     _build_guess_like(),
-        //   ],
-        // ),
       );
     });
   }
@@ -183,14 +175,18 @@ class _HomeMoviePageState extends State<HomeMoviePage> {
     return Column(
       children: [
         //顶部的信息条
-        _build_guess_like_top(),
+        _build_guess_like_top(
+          logic.homeMovieInfo.value.guessFavorite?.name ?? "",
+          true,
+          logic.homeMovieInfo.value.guessFavorite?.moreText ?? "",
+        ),
         //下面的喜欢的内容
         _build_guess_like_movie(),
       ],
     );
   }
 
-  _build_guess_like_top() {
+  _build_guess_like_top(String leftInfo, bool isMore, String rightInfo) {
     return Container(
       margin: EdgeInsets.only(top: ScreenUtil().setHeight(20)),
       height: ScreenUtil().setHeight(60),
@@ -200,27 +196,30 @@ class _HomeMoviePageState extends State<HomeMoviePage> {
           Container(
             margin: EdgeInsets.only(left: ScreenUtil().setWidth(20)),
             child: Text(
-              logic.homeMovieInfo.value.guessFavorite?.name ?? "",
+              leftInfo,
               style: TextStyle(fontWeight: FontWeight.w700, fontSize: 18),
             ),
           ),
-          GestureDetector(
-            onTap: () {
-              print("更多猜你喜欢");
-            },
-            child: Container(
-              margin: EdgeInsets.only(right: ScreenUtil().setWidth(20)),
-              child: Row(
-                children: [
-                  Text(
-                    logic.homeMovieInfo.value.guessFavorite?.moreText ?? "",
-                    style: TextStyle(fontSize: 13),
-                  ),
-                  Icon(
-                    Icons.arrow_forward_ios_rounded,
-                    size: ScreenUtil().setWidth(30),
-                  ),
-                ],
+          Visibility(
+            visible: isMore,
+            child: GestureDetector(
+              onTap: () {
+                print("更多猜你喜欢");
+              },
+              child: Container(
+                margin: EdgeInsets.only(right: ScreenUtil().setWidth(20)),
+                child: Row(
+                  children: [
+                    Text(
+                      rightInfo,
+                      style: TextStyle(fontSize: 13),
+                    ),
+                    Icon(
+                      Icons.arrow_forward_ios_rounded,
+                      size: ScreenUtil().setWidth(30),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -239,7 +238,10 @@ class _HomeMoviePageState extends State<HomeMoviePage> {
                   ?.length ??
               0,
           itemBuilder: (context, index) {
-            return _build_quess_like_movie_item(index);
+            return _build_quess_like_movie_item(
+                logic
+                    .homeMovieInfo.value?.guessFavorite?.sectionContents[index],
+                false);
           },
           //头尾间隔
           padding: EdgeInsets.only(
@@ -257,30 +259,167 @@ class _HomeMoviePageState extends State<HomeMoviePage> {
     );
   }
 
-  _build_quess_like_movie_item(int index) {
+  _build_quess_like_movie_item(
+      SectionContents sectionContents, bool grid_view_width) {
     return Container(
-      width: ScreenUtil().setWidth(200),
+      width: ScreenUtil().setWidth(grid_view_width ? 0 : 200),
+      height: ScreenUtil().setHeight(grid_view_width ? 0 : 220),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           //顶部大图
-          Container(
-            width: ScreenUtil().setWidth(200),
-            height: ScreenUtil().setHeight(220),
-            margin: EdgeInsets.only(bottom: ScreenUtil().setHeight(6)),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(ScreenUtil().setWidth(20)),
-              child: Image.network(
-                logic.homeMovieInfo.value?.guessFavorite?.sectionContents[index]
-                    .coverUrl,
-                fit: BoxFit.fill,
+          Expanded(
+            child: Container(
+              width: double.infinity,
+              height: double.infinity,
+              margin: EdgeInsets.only(bottom: ScreenUtil().setHeight(6)),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(ScreenUtil().setWidth(20)),
+                child: Stack(
+                  children: [
+                    //背景图
+                    Positioned.fill(
+                      child: Image.network(
+                        sectionContents.coverUrl,
+                        fit: BoxFit.fill,
+                      ),
+                    ),
+                    //关注按钮
+                    Container(
+                      width: ScreenUtil().setWidth(50),
+                      height: ScreenUtil().setWidth(50),
+                      decoration: BoxDecoration(
+                        color: Colors.white38.withOpacity(0.3),
+                        borderRadius: BorderRadius.only(
+                            bottomRight:
+                                Radius.circular(ScreenUtil().setWidth(20))),
+                      ),
+                      child: Icon(
+                        Icons.favorite_border,
+                        color: Color(0xffefefef),
+                        size: ScreenUtil().setWidth(36),
+                      ),
+                    ),
+
+                    Positioned(
+                      bottom: 0,
+                      child: Container(
+                        height: ScreenUtil().setHeight(1),
+                        width: ScreenUtil().setWidth(200),
+                        alignment: Alignment.bottomCenter,
+                        decoration: BoxDecoration(
+                          boxShadow: [
+                            //阴影
+                            BoxShadow(
+                                color: Colors.black54,
+                                blurRadius: ScreenUtil().setHeight(20),
+                                spreadRadius: ScreenUtil().setHeight(20),
+                                offset: Offset(0, -ScreenUtil().setHeight(10)))
+                          ],
+                          gradient: LinearGradient(
+                              colors: [
+                                Colors.black54,
+                                Colors.black54,
+                              ],
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter),
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      child: Text(
+                        '${sectionContents.score}',
+                        style: TextStyle(
+                            fontSize: 16,
+                            color: Color(0xffefefef),
+                            fontWeight: FontWeight.w600),
+                      ),
+                      bottom: ScreenUtil().setHeight(10),
+                      right: ScreenUtil().setWidth(12),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
+
+          //     Container(
+          //       // width: ScreenUtil().setWidth(200),
+          //       // height: ScreenUtil().setHeight(220),
+          // width: double.infinity,
+          //   height: double.infinity,
+          //       margin: EdgeInsets.only(bottom: ScreenUtil().setHeight(6)),
+          //       child: ClipRRect(
+          //         borderRadius: BorderRadius.circular(ScreenUtil().setWidth(20)),
+          //         child: Stack(
+          //           children: [
+          //             //背景图
+          //             Positioned.fill(
+          //               child: Image.network(
+          //                 sectionContents.coverUrl,
+          //                 fit: BoxFit.fill,
+          //               ),
+          //             ),
+          //             //关注按钮
+          //             Container(
+          //               width: ScreenUtil().setWidth(50),
+          //               height: ScreenUtil().setWidth(50),
+          //               decoration: BoxDecoration(
+          //                 color: Colors.white38.withOpacity(0.3),
+          //                 borderRadius: BorderRadius.only(
+          //                     bottomRight:
+          //                         Radius.circular(ScreenUtil().setWidth(20))),
+          //               ),
+          //               child: Icon(
+          //                 Icons.favorite_border,
+          //                 color: Color(0xffefefef),
+          //                 size: ScreenUtil().setWidth(36),
+          //               ),
+          //             ),
+          //
+          //             Positioned(
+          //               bottom: 0,
+          //               child: Container(
+          //                 height: ScreenUtil().setHeight(1),
+          //                 width: ScreenUtil().setWidth(200),
+          //                 alignment: Alignment.bottomCenter,
+          //                 decoration: BoxDecoration(
+          //                   boxShadow: [
+          //                     //阴影
+          //                     BoxShadow(
+          //                         color: Colors.black54,
+          //                         blurRadius: ScreenUtil().setHeight(20),
+          //                         spreadRadius: ScreenUtil().setHeight(20),
+          //                         offset: Offset(0, -ScreenUtil().setHeight(10)))
+          //                   ],
+          //                   gradient: LinearGradient(
+          //                       colors: [
+          //                         Colors.black54,
+          //                         Colors.black54,
+          //                       ],
+          //                       begin: Alignment.topCenter,
+          //                       end: Alignment.bottomCenter),
+          //                 ),
+          //               ),
+          //             ),
+          //             Positioned(
+          //               child: Text(
+          //                 '${sectionContents.score}',
+          //                 style: TextStyle(
+          //                     fontSize: 16,
+          //                     color: Color(0xffefefef),
+          //                     fontWeight: FontWeight.w600),
+          //               ),
+          //               bottom: ScreenUtil().setHeight(10),
+          //               right: ScreenUtil().setWidth(12),
+          //             ),
+          //           ],
+          //         ),
+          //       ),
+          //     ),
           //底部的名称
           Text(
-            logic.homeMovieInfo.value?.guessFavorite?.sectionContents[index]
-                .title,
+            sectionContents.title,
             maxLines: 1,
             textAlign: TextAlign.left,
             overflow: TextOverflow.ellipsis, // 显示不完，就在后面显示点点
@@ -289,8 +428,7 @@ class _HomeMoviePageState extends State<HomeMoviePage> {
           ),
           //介绍
           Text(
-            logic.homeMovieInfo.value?.guessFavorite?.sectionContents[index]
-                .subTitle,
+            sectionContents.subTitle,
             maxLines: 1,
             textAlign: TextAlign.left,
             overflow: TextOverflow.ellipsis, // 显示不完，就在后面显示点点
@@ -305,10 +443,45 @@ class _HomeMoviePageState extends State<HomeMoviePage> {
     return ListView.builder(
       shrinkWrap: true, //为true可以解决子控件必须设置高度的问题
       physics: NeverScrollableScrollPhysics(), //禁用滑动事件
-      itemCount: 10,
+      itemCount: logic.homeMovieInfo.value?.sections?.length ?? 0,
       itemBuilder: (context, index) {
-        return Text('hahah');
+        if (logic.homeMovieInfo.value?.sections[index].sequence == 1004) {
+          return _build_other_in_look(
+              logic.homeMovieInfo.value?.sections[index]);
+        } else {
+          return Text('hahah2222');
+        }
       },
+    );
+  }
+
+  Widget _build_other_in_look(Sections section) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        _build_guess_like_top(section.name, false, ''),
+        Padding(
+          padding: EdgeInsets.only(
+              left: ScreenUtil().setWidth(20),
+              right: ScreenUtil().setWidth(20)),
+          child: GridView.builder(
+              //屏蔽无限高度
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(), //禁用滑动事件
+              itemCount: section.sectionContents.length,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 3,
+                  crossAxisSpacing: ScreenUtil().setWidth(10),
+                  mainAxisSpacing: ScreenUtil().setWidth(20),
+                  childAspectRatio: ScreenUtil().setWidth(200) /
+                      ScreenUtil().setHeight(220) *
+                      0.8),
+              itemBuilder: (context, index) {
+                return _build_quess_like_movie_item(
+                    section.sectionContents[index], true);
+              }),
+        )
+      ],
     );
   }
 }

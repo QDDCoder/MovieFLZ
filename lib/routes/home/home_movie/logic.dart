@@ -23,6 +23,7 @@ class HomeMovieLogic extends GetxController {
       val.bean = tempModel.bean;
       val.bannerTop = tempModel.bannerTop;
       val.guessFavorite = tempModel.guessFavorite;
+      val.sections = tempModel.sections;
     });
     //json 转 Map 转 更新
   }
