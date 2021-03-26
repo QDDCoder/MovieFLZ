@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:movie_flz/routes/home/gess_you_like/view.dart';
 import 'package:movie_flz/routes/home/views/HomeMovieView.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -18,7 +19,7 @@ class _HomeMoviePageState extends State<HomeMoviePage>
 
   @override
   // TODO: implement wantKeepAlive
-  bool get wantKeepAlive => true;
+  bool get wantKeepAlive => false;
 
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
@@ -38,6 +39,7 @@ class _HomeMoviePageState extends State<HomeMoviePage>
   @override
   void initState() {
     // TODO: implement initState
+    print("页面返回调用了吗");
     logic.getMovieInfo();
     super.initState();
   }
@@ -184,6 +186,12 @@ class _HomeMoviePageState extends State<HomeMoviePage>
   ///猜你喜欢
   _build_guess_like() {
     return HorizontalListMovieSectionWidget(
+        clickAction: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => GessYouLikePage()));
+        },
         leftName: logic.homeMovieInfo.value.guessFavorite?.name ?? "",
         moreText: logic.homeMovieInfo.value.guessFavorite?.moreText ?? "",
         sectionContents:

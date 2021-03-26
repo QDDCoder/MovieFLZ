@@ -29,13 +29,14 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
   get:
-  dio:
+  dio: ^3.0.10
   shared_preferences:
   fluttertoast:
   flutter_screenutil:
   flutter_swiper:
   pull_to_refresh: ^1.6.4
   flutter_star:
+  cached_network_image: ^2.5.1
 
 dev_dependencies:
   flutter_test:

@@ -24,6 +24,7 @@
 
 import 'dart:ui';
 
+import 'package:cached_network_image/cached_network_image.dart';
 /**
  *
  * 首页的View的综合
@@ -67,8 +68,8 @@ class MovieItemCard extends StatelessWidget {
                   children: [
                     //背景图
                     Positioned.fill(
-                      child: Image.network(
-                        sectionContents.coverUrl,
+                      child: CachedNetworkImage(
+                        imageUrl: sectionContents.coverUrl,
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -164,6 +165,7 @@ class MovieSectionHead extends StatelessWidget {
   final String rightInfo;
   final double paddingTop;
   final bool color_rever;
+  final Function clickAction;
 
   const MovieSectionHead(
       {Key key,
@@ -171,7 +173,8 @@ class MovieSectionHead extends StatelessWidget {
       this.isMore,
       this.rightInfo,
       this.paddingTop = 20,
-      this.color_rever = false})
+      this.color_rever = false,
+      this.clickAction})
       : super(key: key);
 
   @override
@@ -196,7 +199,7 @@ class MovieSectionHead extends StatelessWidget {
             visible: isMore,
             child: GestureDetector(
               onTap: () {
-                print("更多猜你喜欢");
+                clickAction();
               },
               child: Container(
                 margin: EdgeInsets.only(right: ScreenUtil().setWidth(20)),
@@ -241,8 +244,8 @@ class SwiperWidget extends StatelessWidget {
         key: UniqueKey(),
         itemBuilder: (BuildContext context, int index) {
           // 配置图片地址
-          return new Image.network(
-            images[index],
+          return new CachedNetworkImage(
+            imageUrl: images[index],
             fit: BoxFit.cover,
           );
         },
@@ -295,8 +298,8 @@ class CategoryWidget extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Image.network(
-            iconUrl,
+          CachedNetworkImage(
+            imageUrl: iconUrl,
             width: ScreenUtil().setWidth(50),
             fit: BoxFit.cover,
           ),
@@ -453,9 +456,14 @@ class HorizontalListMovieSectionWidget extends StatelessWidget {
   final String leftName;
   final String moreText;
   final List<SectionContents> sectionContents;
+  final Function clickAction;
 
   const HorizontalListMovieSectionWidget(
-      {Key key, this.leftName, this.moreText, this.sectionContents})
+      {Key key,
+      this.leftName,
+      this.moreText,
+      this.sectionContents,
+      this.clickAction})
       : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -466,6 +474,7 @@ class HorizontalListMovieSectionWidget extends StatelessWidget {
           leftInfo: leftName,
           isMore: true,
           rightInfo: moreText,
+          clickAction: clickAction,
         ),
         //下面的喜欢的内容
         HorizontalListMovieWidget(
@@ -650,8 +659,8 @@ class HorizontalListMovieCardItemWidget extends StatelessWidget {
         child: Stack(
           children: [
             Positioned.fill(
-              child: Image.network(
-                coverImag,
+              child: CachedNetworkImage(
+                imageUrl: coverImag,
                 fit: BoxFit.cover,
               ),
             ),
@@ -847,8 +856,8 @@ class HorizontalTopListMovieItemWidget extends StatelessWidget {
                 right: ScreenUtil().setWidth(18)),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(10),
-              child: Image.network(
-                coverImg,
+              child: CachedNetworkImage(
+                imageUrl: coverImg,
                 fit: BoxFit.cover,
               ),
             ),
@@ -926,8 +935,8 @@ class SingleImageWidget extends StatelessWidget {
         right: ScreenUtil().setWidth(20),
       ),
       height: 130,
-      child: Image.network(
-        coverImage,
+      child: CachedNetworkImage(
+        imageUrl: coverImage,
         fit: BoxFit.cover,
       ),
     );

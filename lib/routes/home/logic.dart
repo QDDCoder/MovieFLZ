@@ -36,7 +36,6 @@ class HomeLogic extends GetxController {
             seq: 0,
           ));
     });
-
     //json 转 Map 转 更新
   }
 }
