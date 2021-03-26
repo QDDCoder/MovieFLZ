@@ -34,6 +34,8 @@ dependencies:
   fluttertoast:
   flutter_screenutil:
   flutter_swiper:
+  pull_to_refresh: ^1.6.4
+  flutter_star:
 
 dev_dependencies:
   flutter_test:

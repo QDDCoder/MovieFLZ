@@ -110,7 +110,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   getTabView() {
     return Container(
       margin: EdgeInsets.only(
-          top: ScreenUtil().statusBarHeight + ScreenUtil().setHeight(8)),
+          top: ScreenUtil().statusBarHeight + ScreenUtil().setHeight(74)),
       child: TabBarView(
         controller: tabController,
         children: logic.topCategory.value.filmTelevsionList.map((e) {

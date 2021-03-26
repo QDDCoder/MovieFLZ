@@ -40,9 +40,11 @@ class NetTools {
     baseUrl: 'https://api.rr.tv/',
     headers: {
       'clientType': 'ios_rrsp_jzsp',
-      'clientVersion': '5.1.1',
+      'clientVersion': '5.2.1',
       'token': 'rrtv-af3981d1c33da46f560486c850f2c6ab975fd6ef',
-      'Cookie': 'JSESSIONID=EC4FDEB3A1CEB2CEC793BE3439624993',
+      'sign': '2627cc845f66ec7616dadfcc04c9c3ef',
+      'sm': '202101141908359bf2c28b063abb12681e76b1f1b59b60019f5933ae9f6867'
+      // 'Cookie': 'JSESSIONID=EC4FDEB3A1CEB2CEC793BE3439624993',
     },
   ));
 
