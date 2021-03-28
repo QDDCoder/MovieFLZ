@@ -36,6 +36,7 @@ import 'package:flutter_screenutil/screen_util.dart';
 import 'package:flutter_star/custom_rating.dart';
 import 'package:flutter_star/star.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:movie_flz/routes/home/gess_you_like/model/GessYouLikeModel.dart';
 import 'package:movie_flz/routes/home/home_movie/Model/HomeMovieModel.dart';
 import 'package:movie_flz/tools/ColorTools.dart';
 
@@ -940,5 +941,150 @@ class SingleImageWidget extends StatelessWidget {
         fit: BoxFit.cover,
       ),
     );
+  }
+}
+
+/**
+ * 猜你喜欢的List Item
+ */
+class GessYouLikeListItemWidget extends StatelessWidget {
+  //数据model
+  final GessYouLikeItmeModel model;
+
+  const GessYouLikeListItemWidget({Key key, this.model}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    //IntrinsicHeight 组件，把整个row包起来，那样里面的每个元素都会一样高了。
+    return IntrinsicHeight(
+      child: Container(
+        margin: EdgeInsets.only(
+          top: ScreenUtil().setHeight(16),
+          bottom: ScreenUtil().setHeight(10),
+          left: ScreenUtil().setWidth(20),
+          right: ScreenUtil().setWidth(20),
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            //左边的图片处理
+            _buld_lift_image_widget(),
+
+            //名称处理
+            _build_center_info_widgte(),
+
+            //喜欢的按钮
+            _build_right_like_button(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  _buld_lift_image_widget() {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(ScreenUtil().setWidth(14)),
+      child: Image.network(
+        model.coverUrl,
+        fit: BoxFit.cover,
+        height: ScreenUtil().setHeight(158),
+        width: ScreenUtil().setWidth(140),
+      ),
+    );
+  }
+
+  _build_center_info_widgte() {
+    return Padding(
+      padding: EdgeInsets.only(
+          left: ScreenUtil().setWidth(20), right: ScreenUtil().setWidth(20)),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            model.title,
+            style: TextStyle(
+                color: Colors.black, fontWeight: FontWeight.w600, fontSize: 15),
+          ),
+          Padding(
+            padding: EdgeInsets.only(top: ScreenUtil().setHeight(4)),
+            child: Text(
+              '${model.dramaType}/${model.year}/${_changeStringList(model.areaList)}/${_changeType(model.plotTypeList)}',
+              style: TextStyle(color: Colors.black54, fontSize: 13),
+            ),
+          ),
+          (model.actorList.length > 0)
+              ? Container(
+                  width: ScreenUtil().setWidth(420),
+                  padding: EdgeInsets.only(
+                    top: ScreenUtil().setHeight(4),
+                    bottom: ScreenUtil().setHeight(10),
+                  ),
+                  child: Text(
+                    _changeStringList(model.actorList),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis, // 显示不完，就在后面显示点点
+                    style: TextStyle(color: Colors.black54, fontSize: 13),
+                  ),
+                )
+              : Container(
+                  width: 100,
+                  color: Colors.redAccent,
+                ),
+
+          //评价的星星
+          Row(
+            children: [
+              Container(
+                color: Colors.green,
+                margin: EdgeInsets.only(right: ScreenUtil().setWidth(6)),
+                child: CustomRating(
+                  max: 5,
+                  score: model.score / 2,
+                  star: Star(
+                      progress: 0,
+                      num: 5,
+                      fat: 0.5,
+                      size: ScreenUtil().setWidth(26),
+                      fillColor: Colors.indigoAccent,
+                      emptyColor: Colors.black54),
+                ),
+              ),
+              Text(
+                '${model.score}',
+                style: TextStyle(fontSize: 14, color: Colors.black54),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  _build_right_like_button() {
+    return Center(
+      child: IconButton(
+          icon: Icon(
+            Icons.favorite_border,
+            size: 24,
+          ),
+          onPressed: () {}),
+    );
+  }
+
+  String _changeStringList(List<String> list) {
+    String tempString = '';
+    list.forEach((element) {
+      tempString += element;
+    });
+    return tempString;
+  }
+
+  String _changeType(List<String> list) {
+    String tempString = '';
+    list.forEach((element) {
+      tempString += ' ${element}';
+    });
+    tempString.replaceFirst(' ', '');
+    return tempString;
   }
 }

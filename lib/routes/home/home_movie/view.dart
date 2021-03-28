@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:movie_flz/routes/home/gess_you_like/view.dart';
+import 'package:movie_flz/config/RouteConfig.dart';
 import 'package:movie_flz/routes/home/views/HomeMovieView.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -187,10 +187,7 @@ class _HomeMoviePageState extends State<HomeMoviePage>
   _build_guess_like() {
     return HorizontalListMovieSectionWidget(
         clickAction: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (BuildContext context) => GessYouLikePage()));
+          Get.toNamed(RouteConfig.ges_you_like);
         },
         leftName: logic.homeMovieInfo.value.guessFavorite?.name ?? "",
         moreText: logic.homeMovieInfo.value.guessFavorite?.moreText ?? "",
@@ -204,54 +201,53 @@ class _HomeMoviePageState extends State<HomeMoviePage>
    */
   _build_list_movie_info() {
     return MediaQuery.removePadding(
-        //解决listview顶部有个空白的问题。
-        removeTop: true,
-        context: context,
-        child: ListView.builder(
-          shrinkWrap: true, //为true可以解决子控件必须设置高度的问题
-          physics: NeverScrollableScrollPhysics(), //禁用滑动事件
-          itemCount: logic.homeMovieInfo.value?.sections?.length ?? 0,
-          itemBuilder: (context, index) {
-            String display = logic.homeMovieInfo.value?.sections[index].display;
-            String sectionType =
-                logic.homeMovieInfo.value?.sections[index].sectionType;
+      //解决listview顶部有个空白的问题。
+      removeTop: true,
+      context: context,
+      child: ListView.builder(
+        shrinkWrap: true, //为true可以解决子控件必须设置高度的问题
+        physics: NeverScrollableScrollPhysics(), //禁用滑动事件
+        itemCount: logic.homeMovieInfo.value?.sections?.length ?? 0,
+        itemBuilder: (context, index) {
+          String display = logic.homeMovieInfo.value?.sections[index].display;
+          String sectionType =
+              logic.homeMovieInfo.value?.sections[index].sectionType;
 
-            if (display == "SCROLL" && sectionType == "VIDEO") {
-              return GridViewMovieWidget(
-                section: logic.homeMovieInfo.value?.sections[index],
-              );
-            } else if (display == "SLIDE" && sectionType == "VIDEO") {
-              //即将上线
-              return HorizontalListMovieSectionWidget(
-                  leftName:
-                      logic.homeMovieInfo.value?.sections[index].name ?? "",
-                  moreText:
-                      logic.homeMovieInfo.value?.sections[index]?.moreText ??
-                          "",
-                  sectionContents: logic.homeMovieInfo.value?.sections[index]
-                          ?.sectionContents ??
-                      []);
-            } else if (display == "SLIDE" && sectionType == "SHEET") {
-              return HorizontalListMovieCardWidget(
-                section: logic.homeMovieInfo.value?.sections[index],
-              );
-            } else if (sectionType == "AD") {
-              return Container();
-            } else if (sectionType == "TOP") {
-              //电影榜单
-              return HorizontalTopListMovieWidget(
-                sections: logic.homeMovieInfo.value?.sections[index],
-              );
-            } else if (sectionType == "SINGLE_IMAGE") {
-              return SingleImageWidget(
-                coverImage: logic.homeMovieInfo.value?.sections[index]
-                        .sectionContents[0].icon ??
-                    "",
-              );
-            } else {
-              return Text('hahah2222');
-            }
-          },
-        ));
+          if (display == "SCROLL" && sectionType == "VIDEO") {
+            return GridViewMovieWidget(
+              section: logic.homeMovieInfo.value?.sections[index],
+            );
+          } else if (display == "SLIDE" && sectionType == "VIDEO") {
+            //即将上线
+            return HorizontalListMovieSectionWidget(
+                leftName: logic.homeMovieInfo.value?.sections[index].name ?? "",
+                moreText:
+                    logic.homeMovieInfo.value?.sections[index]?.moreText ?? "",
+                sectionContents: logic.homeMovieInfo.value?.sections[index]
+                        ?.sectionContents ??
+                    []);
+          } else if (display == "SLIDE" && sectionType == "SHEET") {
+            return HorizontalListMovieCardWidget(
+              section: logic.homeMovieInfo.value?.sections[index],
+            );
+          } else if (sectionType == "AD") {
+            return Container();
+          } else if (sectionType == "TOP") {
+            //电影榜单
+            return HorizontalTopListMovieWidget(
+              sections: logic.homeMovieInfo.value?.sections[index],
+            );
+          } else if (sectionType == "SINGLE_IMAGE") {
+            return SingleImageWidget(
+              coverImage: logic.homeMovieInfo.value?.sections[index]
+                      .sectionContents[0].icon ??
+                  "",
+            );
+          } else {
+            return Text('hahah2222');
+          }
+        },
+      ),
+    );
   }
 }
