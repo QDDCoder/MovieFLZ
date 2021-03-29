@@ -23,6 +23,7 @@
 */
 import 'package:get/get.dart';
 import 'package:movie_flz/routes/home/gess_you_like/view.dart';
+import 'package:movie_flz/routes/home/more_movies/view.dart';
 import 'package:movie_flz/routes/home/view.dart';
 import 'package:movie_flz/routes/look/view.dart';
 import 'package:movie_flz/routes/user_center/setting/view.dart';
@@ -49,6 +50,9 @@ class RouteConfig {
   ///猜你喜欢
   static final String ges_you_like = '/home/GessYouLikePage';
 
+  ///查看更多
+  static final String look_more_movies = '/home/LookMoreMovies';
+
   ///别名映射页面
   static final List<GetPage> getPages = [
     GetPage(name: main, page: () => MainPage()),
@@ -57,5 +61,6 @@ class RouteConfig {
     GetPage(name: me, page: () => UserCenterPage()),
     GetPage(name: setting, page: () => SettingPage()),
     GetPage(name: ges_you_like, page: () => GessYouLikePage()),
+    GetPage(name: look_more_movies, page: () => MoreMoviesPage()),
   ];
 }

@@ -49,34 +49,11 @@ class _HomeMoviePageState extends State<HomeMoviePage>
     return Obx(() {
       return Container(
         color: Color(0xFFefefef),
-        child: SmartRefresher(
-          enablePullDown: true,
-          enablePullUp: true,
-          header: WaterDropHeader(),
-          footer: CustomFooter(
-            builder: (BuildContext context, LoadStatus mode) {
-              Widget body;
-              if (mode == LoadStatus.idle) {
-                body = Text("pull up load");
-              } else if (mode == LoadStatus.loading) {
-                body = CupertinoActivityIndicator();
-              } else if (mode == LoadStatus.failed) {
-                body = Text("Load Failed!Click retry!");
-              } else if (mode == LoadStatus.canLoading) {
-                body = Text("release to load more");
-              } else {
-                body = Text("No more Data");
-              }
-              return Container(
-                height: 55.0,
-                child: Center(child: body),
-              );
-            },
-          ),
+        child: PullAndPushWidget(
           controller: _refreshController,
-          onRefresh: _onRefresh,
           onLoading: _onLoading,
-          child: ListView(
+          onRefresh: _onRefresh,
+          childWidget: ListView(
             children: [
               //上半部分的
               _build_top_info_widget(),
@@ -216,10 +193,32 @@ class _HomeMoviePageState extends State<HomeMoviePage>
           if (display == "SCROLL" && sectionType == "VIDEO") {
             return GridViewMovieWidget(
               section: logic.homeMovieInfo.value?.sections[index],
+              //查看更多
+              lookMore: () {
+                //URL解析参数
+                Uri u = Uri.parse(
+                    logic.homeMovieInfo.value?.sections[index].targetId);
+                String seriesId = u.queryParameters['seriesId'];
+                Get.toNamed(RouteConfig.look_more_movies,
+                    arguments: {'id': seriesId});
+              },
+              //换一批
+              refush: () {
+                logic.refushPeoplesLook(
+                    sectionId: logic.homeMovieInfo.value?.sections[index].id);
+              },
             );
           } else if (display == "SLIDE" && sectionType == "VIDEO") {
             //即将上线
             return HorizontalListMovieSectionWidget(
+                clickAction: () {
+                  //URL解析参数
+                  Uri u = Uri.parse(
+                      logic.homeMovieInfo.value?.sections[index].targetId);
+                  String seriesId = u.queryParameters['seriesId'];
+                  Get.toNamed(RouteConfig.look_more_movies,
+                      arguments: {'id': seriesId});
+                },
                 leftName: logic.homeMovieInfo.value?.sections[index].name ?? "",
                 moreText:
                     logic.homeMovieInfo.value?.sections[index]?.moreText ?? "",

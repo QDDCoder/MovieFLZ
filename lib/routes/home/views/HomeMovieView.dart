@@ -25,6 +25,7 @@
 import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 /**
  *
  * 首页的View的综合
@@ -39,6 +40,7 @@ import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:movie_flz/routes/home/gess_you_like/model/GessYouLikeModel.dart';
 import 'package:movie_flz/routes/home/home_movie/Model/HomeMovieModel.dart';
 import 'package:movie_flz/tools/ColorTools.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 /**
  * 电影card
@@ -358,8 +360,11 @@ class HorizontalListMovieWidget extends StatelessWidget {
  */
 class GridViewMovieWidget extends StatelessWidget {
   final Sections section;
+  final Function lookMore;
+  final Function refush;
 
-  const GridViewMovieWidget({Key key, this.section}) : super(key: key);
+  const GridViewMovieWidget({Key key, this.section, this.lookMore, this.refush})
+      : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -414,17 +419,17 @@ class GridViewMovieWidget extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          _build_button(Icons.arrow_circle_down, '查看更多'),
+          _build_button(Icons.arrow_circle_down, '查看更多', lookMore),
           SizedBox(
             width: ScreenUtil().setWidth(10),
           ),
-          _build_button(Icons.refresh, '换一换'),
+          _build_button(Icons.refresh, '换一换', refush),
         ],
       ),
     );
   }
 
-  _build_button(IconData leftIcon, String rightInfo) {
+  _build_button(IconData leftIcon, String rightInfo, Function action) {
     return Expanded(
       child: Container(
         decoration: BoxDecoration(
@@ -443,7 +448,7 @@ class GridViewMovieWidget extends StatelessWidget {
           padding: 2,
           fontSize: 15,
           textColor: Colors.black54,
-          onTap: () {},
+          onTap: action,
         ),
       ),
     );
@@ -739,35 +744,76 @@ class HorizontalTopListMovieWidget extends StatelessWidget {
       height: ScreenUtil().setHeight(380),
       child: RepaintBoundary(
         //边距和填充
-        child: ListView.separated(
-          itemCount: sections.sectionContents.length,
-          itemBuilder: (context, index) {
-            //组件card
-            return ClipRRect(
-              borderRadius: BorderRadius.circular(
-                ScreenUtil().setWidth(20),
+        child: _build_list_view_widgte(),
+      ),
+    );
+  }
+
+  _build_list_view_widgte() {
+    return ListView.separated(
+      itemCount: sections.sectionContents.length + 1,
+      itemBuilder: (context, index) {
+        if (index == sections.sectionContents.length) {
+          return _build_last_more_widget();
+        } else {
+          //组件card
+          return ClipRRect(
+            borderRadius: BorderRadius.circular(
+              ScreenUtil().setWidth(20),
+            ),
+            child: Container(
+              width: 280,
+              color: hexToColor(sections.sectionContents[index].color),
+              child: HorizontalTopListMovieItemWidget(
+                sectionContents: sections.sectionContents[index],
               ),
-              child: Container(
-                width: 280,
-                color: hexToColor(sections.sectionContents[index].color),
-                child: HorizontalTopListMovieItemWidget(
-                  sectionContents: sections.sectionContents[index],
-                ),
-              ),
-            );
-          },
-          //头尾间隔
-          padding: EdgeInsets.only(
-              left: ScreenUtil().setWidth(20),
-              right: ScreenUtil().setWidth(20)),
-          scrollDirection: Axis.horizontal,
-          //item 间隔
-          separatorBuilder: (context, index) {
-            return SizedBox(
-              width: ScreenUtil().setWidth(10),
-            );
-          },
+            ),
+          );
+        }
+      },
+      //头尾间隔
+      padding: EdgeInsets.only(
+          left: ScreenUtil().setWidth(20), right: ScreenUtil().setWidth(20)),
+      scrollDirection: Axis.horizontal,
+      //item 间隔
+      separatorBuilder: (context, index) {
+        return SizedBox(
+          width: ScreenUtil().setWidth(10),
+        );
+      },
+    );
+  }
+
+  _build_last_more_widget() {
+    return Container(
+      alignment: Alignment.center,
+      width: ScreenUtil().setWidth(100),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(
+          ScreenUtil().setWidth(20),
         ),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            '更',
+            style: TextStyle(fontSize: 16, color: Colors.black45),
+          ),
+          Text(
+            '多',
+            style: TextStyle(fontSize: 16, color: Colors.black45),
+          ),
+          Padding(
+            padding: EdgeInsets.only(top: ScreenUtil().setHeight(4)),
+            child: Icon(
+              Icons.arrow_circle_down,
+              size: ScreenUtil().setWidth(36),
+              color: Colors.black45,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -798,29 +844,30 @@ class HorizontalTopListMovieItemWidget extends StatelessWidget {
         ),
         //影片列表
         Positioned.fill(
-            top: ScreenUtil().setHeight(68),
-            bottom: ScreenUtil().setHeight(20),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _build_top_movie_item(
-                    '1',
-                    sectionContents.series[0].title,
-                    sectionContents.series[0].coverUrl,
-                    sectionContents.series[0].score),
-                _build_top_movie_item(
-                    '2',
-                    sectionContents.series[1].title,
-                    sectionContents.series[1].coverUrl,
-                    sectionContents.series[1].score),
-                _build_top_movie_item(
-                    '3',
-                    sectionContents.series[2].title,
-                    sectionContents.series[2].coverUrl,
-                    sectionContents.series[2].score),
-              ],
-            )),
+          top: ScreenUtil().setHeight(68),
+          bottom: ScreenUtil().setHeight(20),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _build_top_movie_item(
+                  '1',
+                  sectionContents.series[0].title,
+                  sectionContents.series[0].coverUrl,
+                  sectionContents.series[0].score),
+              _build_top_movie_item(
+                  '2',
+                  sectionContents.series[1].title,
+                  sectionContents.series[1].coverUrl,
+                  sectionContents.series[1].score),
+              _build_top_movie_item(
+                  '3',
+                  sectionContents.series[2].title,
+                  sectionContents.series[2].coverUrl,
+                  sectionContents.series[2].score),
+            ],
+          ),
+        ),
       ],
     );
   }
@@ -1000,61 +1047,77 @@ class GessYouLikeListItemWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            model.title,
-            style: TextStyle(
-                color: Colors.black, fontWeight: FontWeight.w600, fontSize: 15),
-          ),
-          Padding(
-            padding: EdgeInsets.only(top: ScreenUtil().setHeight(4)),
+          Container(
+            width: ScreenUtil().setWidth(460),
             child: Text(
-              '${model.dramaType}/${model.year}/${_changeStringList(model.areaList)}/${_changeType(model.plotTypeList)}',
-              style: TextStyle(color: Colors.black54, fontSize: 13),
+              model.title,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 15),
             ),
           ),
-          (model.actorList.length > 0)
+
+          Container(
+            padding: EdgeInsets.only(
+                top: ScreenUtil().setHeight(10),
+                bottom: ScreenUtil().setHeight(6)),
+            width: ScreenUtil().setWidth(440),
+            child: Text(
+              '${model.dramaType}/${model.year}/${_changeStringList(model.areaList)}/${_changeType(model.plotTypeList)}',
+              style: TextStyle(
+                color: Colors.black54,
+                fontSize: 13,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis, // 显示不完，就在后面显示点点
+            ),
+          ),
+          (_changeStringList(model.actorList).isNotEmpty)
               ? Container(
-                  width: ScreenUtil().setWidth(420),
-                  padding: EdgeInsets.only(
-                    top: ScreenUtil().setHeight(4),
-                    bottom: ScreenUtil().setHeight(10),
-                  ),
+                  margin: EdgeInsets.only(
+                      top: ScreenUtil().setHeight(6),
+                      bottom: ScreenUtil().setHeight(4)),
+                  width: ScreenUtil().setWidth(440),
                   child: Text(
                     _changeStringList(model.actorList),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis, // 显示不完，就在后面显示点点
                     style: TextStyle(color: Colors.black54, fontSize: 13),
+                    strutStyle: StrutStyle(
+                        forceStrutHeight: true, height: 0.48, leading: 0.6),
                   ),
                 )
-              : Container(
-                  width: 100,
-                  color: Colors.redAccent,
+              : Container(),
+          Padding(
+            padding: EdgeInsets.only(top: ScreenUtil().setHeight(10)),
+            child: Row(
+              children: [
+                Container(
+                  margin: EdgeInsets.only(right: ScreenUtil().setWidth(6)),
+                  child: CustomRating(
+                    max: 5,
+                    score: model.score / 2,
+                    star: Star(
+                        progress: 0,
+                        num: 5,
+                        fat: 0.5,
+                        size: ScreenUtil().setWidth(26),
+                        fillColor: Colors.indigoAccent,
+                        emptyColor: Colors.black54),
+                  ),
                 ),
+                Text(
+                  '${model.score}',
+                  style: TextStyle(fontSize: 14, color: Colors.black54),
+                ),
+              ],
+            ),
+          ),
 
           //评价的星星
-          Row(
-            children: [
-              Container(
-                color: Colors.green,
-                margin: EdgeInsets.only(right: ScreenUtil().setWidth(6)),
-                child: CustomRating(
-                  max: 5,
-                  score: model.score / 2,
-                  star: Star(
-                      progress: 0,
-                      num: 5,
-                      fat: 0.5,
-                      size: ScreenUtil().setWidth(26),
-                      fillColor: Colors.indigoAccent,
-                      emptyColor: Colors.black54),
-                ),
-              ),
-              Text(
-                '${model.score}',
-                style: TextStyle(fontSize: 14, color: Colors.black54),
-              ),
-            ],
-          ),
         ],
       ),
     );
@@ -1062,12 +1125,20 @@ class GessYouLikeListItemWidget extends StatelessWidget {
 
   _build_right_like_button() {
     return Center(
-      child: IconButton(
-          icon: Icon(
+      child: Container(
+        width: ScreenUtil().setWidth(56),
+        height: ScreenUtil().setWidth(56),
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(ScreenUtil().setWidth(28)),
+            color: Colors.indigo.withOpacity(0.3)),
+        child: GestureDetector(
+          child: Icon(
             Icons.favorite_border,
-            size: 24,
+            size: ScreenUtil().setWidth(34),
+            color: Colors.indigoAccent,
           ),
-          onPressed: () {}),
+        ),
+      ),
     );
   }
 
@@ -1086,5 +1157,55 @@ class GessYouLikeListItemWidget extends StatelessWidget {
     });
     tempString.replaceFirst(' ', '');
     return tempString;
+  }
+}
+
+/**
+ * 上下拉的控件
+ */
+class PullAndPushWidget extends StatelessWidget {
+  final RefreshController controller;
+  final Function onRefresh;
+  final Function onLoading;
+  final Widget childWidget;
+
+  const PullAndPushWidget(
+      {Key key,
+      this.controller,
+      this.onRefresh,
+      this.onLoading,
+      this.childWidget})
+      : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return SmartRefresher(
+      enablePullDown: true,
+      enablePullUp: true,
+      header: WaterDropHeader(),
+      footer: CustomFooter(
+        builder: (BuildContext context, LoadStatus mode) {
+          Widget body;
+          if (mode == LoadStatus.idle) {
+            body = Text("pull up load");
+          } else if (mode == LoadStatus.loading) {
+            body = CupertinoActivityIndicator();
+          } else if (mode == LoadStatus.failed) {
+            body = Text("Load Failed!Click retry!");
+          } else if (mode == LoadStatus.canLoading) {
+            body = Text("release to load more");
+          } else {
+            body = Text("No more Data");
+          }
+          return Container(
+            height: 55.0,
+            child: Center(child: body),
+          );
+        },
+      ),
+      controller: controller,
+      onRefresh: onRefresh,
+      onLoading: onLoading,
+      child: childWidget,
+    );
   }
 }

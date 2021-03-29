@@ -295,7 +295,7 @@ class SectionContents {
   String dramaType;
   double score;
   String feeMode;
-  Null favorite;
+  bool favorite;
   int id;
   int positionId;
   Null categoryId;

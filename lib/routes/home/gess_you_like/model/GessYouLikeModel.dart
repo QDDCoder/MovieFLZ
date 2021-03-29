@@ -16,7 +16,7 @@ class GessYouLikeItmeModel {
   String title;
   String subTitle;
   String coverUrl;
-  String year;
+  int year;
   List<String> areaList;
   List<String> plotTypeList;
   String dramaType;

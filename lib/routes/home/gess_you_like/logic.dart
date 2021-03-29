@@ -9,7 +9,9 @@ class GessYouLikeLogic extends GetxController {
   final gessYouLikeList = GessYouLikeModel().obs;
 
   //获取猜你喜欢的列白数据
-  Future<void> getGessYouLikeList() async {
+  Future<void> getGessYouLikeList(
+      { //query参数，用于接收分页信息
+      refresh = true}) async {
     var r = await NetTools.dio.get<String>(
       "drama/app/guess_user_like?isRecByUser=1",
     );
@@ -19,8 +21,10 @@ class GessYouLikeLogic extends GetxController {
     gessYouLikeList.update((val) {
       var tempModle =
           GessYouLikeModel.fromJson(json: convert.jsonDecode(r.data));
+      if (refresh) {
+        val.itemList.clear();
+      }
       val.itemList.addAll(tempModle.itemList);
-      print(val.itemList);
     });
   }
 }
