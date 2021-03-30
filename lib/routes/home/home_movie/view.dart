@@ -186,6 +186,7 @@ class _HomeMoviePageState extends State<HomeMoviePage>
         physics: NeverScrollableScrollPhysics(), //禁用滑动事件
         itemCount: logic.homeMovieInfo.value?.sections?.length ?? 0,
         itemBuilder: (context, index) {
+          //获取类型
           String display = logic.homeMovieInfo.value?.sections[index].display;
           String sectionType =
               logic.homeMovieInfo.value?.sections[index].sectionType;
@@ -226,7 +227,25 @@ class _HomeMoviePageState extends State<HomeMoviePage>
                         ?.sectionContents ??
                     []);
           } else if (display == "SLIDE" && sectionType == "SHEET") {
+            //横向卡片
             return HorizontalListMovieCardWidget(
+              moreClickAction: () {
+                //查看更多
+                Get.toNamed(RouteConfig.list_card_more, arguments: {
+                  'title': logic.homeMovieInfo.value?.sections[index].name,
+                  'sectionId': logic.homeMovieInfo.value?.sections[index].id
+                });
+              },
+              itemClickAction: (tapIndex) {
+                var id = logic.homeMovieInfo.value?.sections[index]
+                    ?.sectionContents[tapIndex]?.seriesId;
+                print(
+                    "什么啊${logic.homeMovieInfo.value?.sections[index]?.sectionContents[tapIndex]}");
+                if (id != null) {
+                  Get.toNamed(RouteConfig.look_more_movies,
+                      arguments: {'id': '${id}'});
+                }
+              },
               section: logic.homeMovieInfo.value?.sections[index],
             );
           } else if (sectionType == "AD") {
@@ -234,6 +253,16 @@ class _HomeMoviePageState extends State<HomeMoviePage>
           } else if (sectionType == "TOP") {
             //电影榜单
             return HorizontalTopListMovieWidget(
+              clickItemMore: (tapIndex) {
+                //item的查看更多
+                Get.toNamed(RouteConfig.top_movies_list, arguments: {
+                  'sectionId': logic.homeMovieInfo.value?.sections[index]
+                      ?.sectionContents[tapIndex].sectionId
+                });
+              },
+              clickRightMore: () {
+                //最右边的查看更多
+              },
               sections: logic.homeMovieInfo.value?.sections[index],
             );
           } else if (sectionType == "SINGLE_IMAGE") {

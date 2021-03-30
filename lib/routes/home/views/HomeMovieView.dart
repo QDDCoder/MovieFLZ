@@ -38,6 +38,7 @@ import 'package:flutter_star/custom_rating.dart';
 import 'package:flutter_star/star.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:movie_flz/routes/home/gess_you_like/model/GessYouLikeModel.dart';
+import 'package:movie_flz/routes/home/home_list_card_view/model/ListCardViewModel.dart';
 import 'package:movie_flz/routes/home/home_movie/Model/HomeMovieModel.dart';
 import 'package:movie_flz/tools/ColorTools.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -553,8 +554,11 @@ class LZClickImageAndTitleBtn extends StatelessWidget {
  */
 class HorizontalListMovieCardWidget extends StatelessWidget {
   final Sections section;
+  final Function moreClickAction;
+  final Function itemClickAction;
 
-  const HorizontalListMovieCardWidget({Key key, this.section})
+  const HorizontalListMovieCardWidget(
+      {Key key, this.section, this.moreClickAction, this.itemClickAction})
       : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -562,6 +566,7 @@ class HorizontalListMovieCardWidget extends StatelessWidget {
       children: [
         //顶部的信息条
         MovieSectionHead(
+          clickAction: moreClickAction,
           leftInfo: section.name ?? "",
           isMore: true,
           rightInfo: section.moreText ?? "",
@@ -580,16 +585,21 @@ class HorizontalListMovieCardWidget extends StatelessWidget {
         child: ListView.separated(
           itemCount: section.sectionContents.length,
           itemBuilder: (context, index) {
-            return Container(
-              width: 280,
-              decoration: BoxDecoration(
-                color: hexToColor(section.sectionContents[index].color),
-                borderRadius: BorderRadius.circular(
-                  ScreenUtil().setWidth(20),
+            return GestureDetector(
+              onTap: () {
+                itemClickAction(index);
+              },
+              child: Container(
+                width: 280,
+                decoration: BoxDecoration(
+                  color: hexToColor(section.sectionContents[index].color),
+                  borderRadius: BorderRadius.circular(
+                    ScreenUtil().setWidth(20),
+                  ),
                 ),
-              ),
-              child: HorizontalListMovieCardItemWidget(
-                section: section?.sectionContents[index],
+                child: HorizontalListMovieCardItemWidget(
+                  section: section?.sectionContents[index],
+                ),
               ),
             );
           },
@@ -719,7 +729,7 @@ class HorizontalListMovieCardItemWidget extends StatelessWidget {
             padding: 6,
             fontSize: 13,
             textColor: Colors.white54,
-            onTap: () {},
+            onTap: null,
           ),
           // ),
         ],
@@ -734,7 +744,12 @@ class HorizontalListMovieCardItemWidget extends StatelessWidget {
 class HorizontalTopListMovieWidget extends StatelessWidget {
   final Sections sections;
 
-  const HorizontalTopListMovieWidget({Key key, this.sections})
+  final Function clickItemMore;
+
+  final Function clickRightMore;
+
+  const HorizontalTopListMovieWidget(
+      {Key key, this.sections, this.clickItemMore, this.clickRightMore})
       : super(key: key);
 
   @override
@@ -765,6 +780,9 @@ class HorizontalTopListMovieWidget extends StatelessWidget {
               width: 280,
               color: hexToColor(sections.sectionContents[index].color),
               child: HorizontalTopListMovieItemWidget(
+                itemMoreAction: () {
+                  clickItemMore(index);
+                },
                 sectionContents: sections.sectionContents[index],
               ),
             ),
@@ -785,35 +803,38 @@ class HorizontalTopListMovieWidget extends StatelessWidget {
   }
 
   _build_last_more_widget() {
-    return Container(
-      alignment: Alignment.center,
-      width: ScreenUtil().setWidth(100),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(
-          ScreenUtil().setWidth(20),
+    return GestureDetector(
+      onTap: clickRightMore,
+      child: Container(
+        alignment: Alignment.center,
+        width: ScreenUtil().setWidth(100),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(
+            ScreenUtil().setWidth(20),
+          ),
         ),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            '更',
-            style: TextStyle(fontSize: 16, color: Colors.black45),
-          ),
-          Text(
-            '多',
-            style: TextStyle(fontSize: 16, color: Colors.black45),
-          ),
-          Padding(
-            padding: EdgeInsets.only(top: ScreenUtil().setHeight(4)),
-            child: Icon(
-              Icons.arrow_circle_down,
-              size: ScreenUtil().setWidth(36),
-              color: Colors.black45,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              '更',
+              style: TextStyle(fontSize: 16, color: Colors.black45),
             ),
-          ),
-        ],
+            Text(
+              '多',
+              style: TextStyle(fontSize: 16, color: Colors.black45),
+            ),
+            Padding(
+              padding: EdgeInsets.only(top: ScreenUtil().setHeight(4)),
+              child: Icon(
+                Icons.arrow_circle_down,
+                size: ScreenUtil().setWidth(36),
+                color: Colors.black45,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -824,24 +845,30 @@ class HorizontalTopListMovieWidget extends StatelessWidget {
  */
 class HorizontalTopListMovieItemWidget extends StatelessWidget {
   final SectionContents sectionContents;
-
-  const HorizontalTopListMovieItemWidget({Key key, this.sectionContents})
+  final Function itemMoreAction;
+  const HorizontalTopListMovieItemWidget(
+      {Key key, this.sectionContents, this.itemMoreAction})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        //顶部信息头
         Positioned(
-          child: MovieSectionHead(
-            color_rever: true,
-            paddingTop: ScreenUtil().setHeight(8),
-            leftInfo: sectionContents.title,
-            isMore: true,
-            rightInfo: sectionContents.subTitle,
+          child: GestureDetector(
+            onTap: itemMoreAction,
+            child: MovieSectionHead(
+              clickAction: itemMoreAction,
+              color_rever: true,
+              paddingTop: ScreenUtil().setHeight(8),
+              leftInfo: sectionContents.title,
+              isMore: true,
+              rightInfo: sectionContents.subTitle,
+            ),
           ),
         ),
+        //顶部信息头
+
         //影片列表
         Positioned.fill(
           top: ScreenUtil().setHeight(68),
@@ -1206,6 +1233,369 @@ class PullAndPushWidget extends StatelessWidget {
       onRefresh: onRefresh,
       onLoading: onLoading,
       child: childWidget,
+    );
+  }
+}
+
+/**
+ * 卡片的查看更多 ListView的ItemView
+ */
+
+class HomeListCardMoreItemWidget extends StatelessWidget {
+  final SectionContentModel sectionContents;
+
+  final Function topClickAction;
+
+  const HomeListCardMoreItemWidget(
+      {Key key, this.sectionContents, this.topClickAction})
+      : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      height: ScreenUtil().setHeight(410),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(ScreenUtil().setWidth(20)),
+        boxShadow: [
+          //阴影
+          BoxShadow(
+              color: hexToColor('#f8f8f8'),
+              offset: Offset(0, 1),
+              blurRadius: 8,
+              spreadRadius: 1),
+          BoxShadow(
+              color: hexToColor('#f8f8f8'),
+              offset: Offset(1, 0),
+              blurRadius: 8,
+              spreadRadius: 1),
+          BoxShadow(
+              color: hexToColor('#f8f8f8'),
+              offset: Offset(-1, 0),
+              blurRadius: 8,
+              spreadRadius: 1),
+        ],
+      ),
+      child: Column(
+        children: [
+          //顶部的信息
+          _build_top_info(),
+          //中间的信息
+          _build_bottom_movies(),
+        ],
+      ),
+    );
+  }
+
+  /**
+   * 顶部的信息
+   */
+  _build_top_info() {
+    return GestureDetector(
+      onTap: topClickAction,
+      child: Container(
+        padding: EdgeInsets.only(
+            left: ScreenUtil().setWidth(20), right: ScreenUtil().setWidth(20)),
+        width: double.infinity,
+        height: ScreenUtil().setHeight(100),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.only(
+            topRight: Radius.circular(ScreenUtil().setWidth(20)),
+            topLeft: Radius.circular(ScreenUtil().setWidth(20)),
+          ),
+          color: hexToColor(sectionContents.color),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            //左侧的title
+            _build_left_title(),
+            //右侧的数量
+            _build_right_count(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  _build_left_title() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          sectionContents.title,
+          style: TextStyle(
+              color: hexToColor('#f0f0f0'),
+              fontWeight: FontWeight.w700,
+              fontSize: 17),
+        ),
+        // SizedBox(
+        //   height: 10,
+        // ),
+        Text(
+          sectionContents.subTitle,
+          style: TextStyle(
+              color: hexToColor('#f0f0f0'),
+              fontSize: 13,
+              fontWeight: FontWeight.w700),
+        ),
+      ],
+    );
+  }
+
+  _build_right_count() {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(ScreenUtil().setHeight(30)),
+        color: Colors.white70.withOpacity(0.26),
+      ),
+      height: ScreenUtil().setHeight(48),
+      padding: EdgeInsets.only(
+          left: ScreenUtil().setWidth(14), right: ScreenUtil().setWidth(14)),
+      child: LZClickImageAndTitleBtn(
+        mainAxisAlignment: MainAxisAlignment.start,
+        image: Icon(
+          Icons.arrow_circle_down,
+          color: hexToColor('#f0f0f0'),
+          size: ScreenUtil().setWidth(28),
+        ),
+        imageSize: Size(28, 28),
+        title: '共${sectionContents.relevanceCount}部',
+        padding: ScreenUtil().setWidth(9),
+        fontSize: 13,
+        textColor: hexToColor('#f0f0f0'),
+        onTap: null,
+      ),
+    );
+  }
+
+  /**
+   * 下方的电影信息
+   */
+  _build_bottom_movies() {
+    return Container(
+      padding: EdgeInsets.only(
+          left: ScreenUtil().setWidth(20),
+          right: ScreenUtil().setWidth(20),
+          top: ScreenUtil().setHeight(20)),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          _build_movie_item(sectionContents.content[0].coverUrl,
+              sectionContents.content[0].title),
+          _build_movie_item(sectionContents.content[1].coverUrl,
+              sectionContents.content[1].title),
+          _build_movie_item(sectionContents.content[2].coverUrl,
+              sectionContents.content[1].title),
+        ],
+      ),
+    );
+  }
+
+  _build_movie_item(String iconUrl, String name) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          width: ScreenUtil().setWidth(214),
+          height: ScreenUtil().setHeight(224),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(ScreenUtil().setWidth(20)),
+            child: Image.network(
+              iconUrl,
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+        Container(
+          width: ScreenUtil().setWidth(214),
+          margin: EdgeInsets.only(top: ScreenUtil().setHeight(10)),
+          child: Text(
+            name,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis, // 显示不完，就在后面显示点点
+            style: TextStyle(fontSize: 15),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/**
+ * 更多相似电影的顶部信息
+ */
+class MoreMoviesListViewTopWidget extends StatelessWidget {
+  final Function backAction;
+
+  final String title;
+  final String subTitle;
+  final String totalTitle;
+  final String coverUrl;
+
+  const MoreMoviesListViewTopWidget(
+      {Key key,
+      this.backAction,
+      this.title,
+      this.subTitle,
+      this.totalTitle,
+      this.coverUrl})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      height: ScreenUtil().setHeight(406),
+      child: Stack(
+        children: [
+          //背景图片
+          _build_bg_widget(),
+          //背景遮罩层
+          _build_blure_widget(),
+
+          //顶部的工具条
+          _build_top_tools(),
+          //中间的信息
+          _build_center_info(),
+
+          //底部的数量
+          _build_bottom_info(),
+        ],
+      ),
+    );
+  }
+
+  _build_bg_widget() {
+    print('什么玩意儿sss${coverUrl}');
+    return Positioned.fill(
+      child: coverUrl != ''
+          ? Image.network(
+              coverUrl,
+              fit: BoxFit.cover,
+            )
+          : Container(),
+    );
+  }
+
+  _build_blure_widget() {
+    return Positioned.fill(
+        child: Container(
+      decoration: BoxDecoration(
+        //设置一个渐变的背景
+        gradient: LinearGradient(
+          //修改一下方向
+          //开始
+          begin: Alignment.bottomLeft,
+          end: Alignment.topRight,
+          colors: [
+            hexToColor('#505A6A').withOpacity(0.9),
+            hexToColor('#505A6A').withOpacity(0.5)
+          ],
+        ),
+      ),
+    ));
+  }
+
+  _build_top_tools() {
+    return Padding(
+      padding: EdgeInsets.only(
+          top: ScreenUtil().statusBarHeight + ScreenUtil().setHeight(10),
+          left: ScreenUtil().setWidth(10),
+          right: ScreenUtil().setWidth(10)),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          IconButton(
+            icon: Icon(
+              Icons.arrow_back_ios,
+              color: Colors.white,
+            ),
+            onPressed: backAction,
+          ),
+          IconButton(
+              icon: Icon(
+                Icons.share,
+                color: Colors.white,
+              ),
+              onPressed: () {}),
+        ],
+      ),
+    );
+  }
+
+  _build_center_info() {
+    return Padding(
+      padding: EdgeInsets.only(
+          left: ScreenUtil().setWidth(20), top: ScreenUtil().setHeight(0)),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: EdgeInsets.only(bottom: ScreenUtil().setHeight(2)),
+            child: Text(
+              title,
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                  fontWeight: FontWeight.w700),
+            ),
+          ),
+          Text(
+            subTitle,
+            style: TextStyle(
+                color: Colors.white70,
+                fontSize: 12,
+                fontWeight: FontWeight.w700),
+          ),
+        ],
+      ),
+    );
+  }
+
+  _build_bottom_info() {
+    return Align(
+      alignment: Alignment(-1, 0.64),
+      child: Padding(
+        padding: EdgeInsets.only(left: ScreenUtil().setWidth(20)),
+        child: Text(
+          totalTitle,
+          style: TextStyle(color: Colors.white, fontSize: 12),
+        ),
+      ),
+    );
+  }
+}
+
+/**
+ * 更多相似电影的底部list
+ */
+class MoreMoviesListViewListWidget extends StatelessWidget {
+  final List<GessYouLikeItmeModel> content;
+
+  const MoreMoviesListViewListWidget({Key key, this.content}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.only(top: ScreenUtil().setHeight(380)),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.only(
+            topRight: Radius.circular(ScreenUtil().setWidth(10)),
+            topLeft: Radius.circular(ScreenUtil().setWidth(10))),
+        color: Colors.white,
+      ),
+      child: ListView.builder(
+        shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(), //禁用滑动事件
+        itemCount: (content.length ?? 0),
+        itemBuilder: (context, index) {
+          return GessYouLikeListItemWidget(
+            model: content[index],
+          );
+        },
+      ),
     );
   }
 }

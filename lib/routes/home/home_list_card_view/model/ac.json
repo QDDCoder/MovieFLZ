@@ -1,0 +1,163 @@
+{
+  "requestId": "d371a8a9a8c04b8189dfb1fdc49a3a87",
+  "recordsTotal": 0,
+  "code": "0000",
+  "msg": "Success",
+  "data": [{
+    "id": 58619,
+    "title": "专业间谍的养成方法",
+    "subTitle": "超级带感",
+    "enable": true,
+    "color": "#6c7356",
+    "relevanceCount": 9,
+    "content": [{
+      "dramaId": 14847,
+      "coverUrl": "http://img.rr.tv/album/20190515/o_1557913346352.webp",
+      "title": "反击 第一季",
+      "dramaType": "纪录片",
+      "feeMode": "free"
+    }, {
+      "dramaId": 729,
+      "coverUrl": "http://img.rr.tv/seasonCover/20201012/o_1602484061065.jpg",
+      "title": "反击  第一季",
+      "dramaType": "电视剧",
+      "feeMode": "free"
+    }, {
+      "dramaId": 727,
+      "coverUrl": "http://img.rr.tv/seasonCover/20201209/o_1607480395659.webp",
+      "title": "反击  第三季",
+      "dramaType": "电视剧",
+      "feeMode": "free"
+    }]
+  }, {
+    "id": 58622,
+    "title": "硬汉的西部世界",
+    "subTitle": "整点硬核的",
+    "enable": true,
+    "color": "#73565d",
+    "relevanceCount": 7,
+    "content": [{
+      "dramaId": 581,
+      "coverUrl": "https://img.rr.tv/video/20151116/o_1447666839202.jpg",
+      "title": "深入恶土  第一季",
+      "dramaType": "电视剧",
+      "feeMode": "free"
+    }, {
+      "dramaId": 4752,
+      "coverUrl": "https://img.rr.tv/season/20170313/o_1489395400497.jpg",
+      "title": "深入恶土  第二季",
+      "dramaType": "电视剧",
+      "feeMode": "free"
+    }, {
+      "dramaId": 11971,
+      "coverUrl": "http://img.rr.tv/album/20180424/o_1524539971103.jpg",
+      "title": "深入恶土  第三季",
+      "dramaType": "电视剧",
+      "feeMode": "free"
+    }]
+  }, {
+    "id": 58618,
+    "title": "特工养成计划",
+    "subTitle": "精品动作片",
+    "enable": true,
+    "color": "#567373",
+    "relevanceCount": 6,
+    "content": [{
+      "dramaId": 16200,
+      "coverUrl": "http://img.rr.tv/album/20191028/o_1572242706118.jpg",
+      "title": "绊脚石 第一季",
+      "dramaType": "电视剧",
+      "feeMode": "free"
+    }, {
+      "dramaId": 318,
+      "coverUrl": "http://img.rr.tv/seasonCover/20210226/o_1614308269216.jpg",
+      "title": "神盾局特工  第一季",
+      "dramaType": "电视剧",
+      "feeMode": "free"
+    }, {
+      "dramaId": 434,
+      "coverUrl": "https://img.rr.tv/season/o_157803250680684.jpg",
+      "title": "神盾局特工  第二季",
+      "dramaType": "电视剧",
+      "feeMode": "free"
+    }]
+  }, {
+    "id": 58623,
+    "title": "这个杀手有点酷",
+    "subTitle": "越看越上头",
+    "enable": true,
+    "color": "#735656",
+    "relevanceCount": 6,
+    "content": [{
+      "dramaId": 4614,
+      "coverUrl": "http://img.rr.tv/seasonCover/20210323/o_1616466999652.jpg",
+      "title": "汉尼拔  第二季",
+      "dramaType": "电视剧",
+      "feeMode": "free"
+    }, {
+      "dramaId": 415,
+      "coverUrl": "https://img.rr.tv/season/o_157803250563470.jpg",
+      "title": "犯罪心理  第十季",
+      "dramaType": "电视剧",
+      "feeMode": "free"
+    }, {
+      "dramaId": 14091,
+      "coverUrl": "http://img.rr.tv/album/20190307/o_1551942995428.jpg",
+      "title": "杀之 第一季",
+      "dramaType": "电视剧",
+      "feeMode": "free"
+    }]
+  }, {
+    "id": 58625,
+    "title": "超燃动作谍战片",
+    "subTitle": "那些美剧中的经典",
+    "enable": true,
+    "color": "#566c73",
+    "relevanceCount": 12,
+    "content": [{
+      "dramaId": 49,
+      "coverUrl": "http://img.rr.tv/seasonCover/20210125/o_1611562748679.jpg",
+      "title": "越狱  第一季",
+      "dramaType": "电视剧",
+      "feeMode": "free"
+    }, {
+      "dramaId": 70,
+      "coverUrl": "http://img.rr.tv/seasonCover/20210125/o_1611563461018.jpg",
+      "title": "越狱  第二季",
+      "dramaType": "电视剧",
+      "feeMode": "free"
+    }, {
+      "dramaId": 75,
+      "coverUrl": "http://img.rr.tv/seasonCover/20210125/o_1611563431262.jpg",
+      "title": "越狱  第三季",
+      "dramaType": "电视剧",
+      "feeMode": "free"
+    }]
+  }, {
+    "id": 58628,
+    "title": "KUNGFU·动作冒险",
+    "subTitle": "超燃动作片",
+    "enable": true,
+    "color": "#737356",
+    "relevanceCount": 7,
+    "content": [{
+      "dramaId": 14424,
+      "coverUrl": "http://img.rr.tv/album/20190328/o_1553766030352.jpg",
+      "title": "战士 第一季",
+      "dramaType": "电视剧",
+      "feeMode": "free"
+    }, {
+      "dramaId": 19459,
+      "coverUrl": "http://img.rr.tv/seasonCover/20200624/o_1592965354184.webp",
+      "title": "修女战士  第一季",
+      "dramaType": "电视剧",
+      "feeMode": "free"
+    }, {
+      "dramaId": 581,
+      "coverUrl": "https://img.rr.tv/video/20151116/o_1447666839202.jpg",
+      "title": "深入恶土  第一季",
+      "dramaType": "电视剧",
+      "feeMode": "free"
+    }]
+  }]
+}
