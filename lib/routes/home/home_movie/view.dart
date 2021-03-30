@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:movie_flz/config/RouteConfig.dart';
-import 'package:movie_flz/routes/home/views/HomeMovieView.dart';
+import 'package:movie_flz/routes/home/home_root/views/HomeMovieView.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import 'logic.dart';
@@ -267,6 +267,15 @@ class _HomeMoviePageState extends State<HomeMoviePage>
             );
           } else if (sectionType == "SINGLE_IMAGE") {
             return SingleImageWidget(
+              click_action: () {
+                //URL解析参数
+                Uri u = Uri.parse(logic.homeMovieInfo.value?.sections[index]
+                    .sectionContents[0].targetId);
+                String navigationId = u.queryParameters['navigationId'];
+                // targetId
+                Get.toNamed(RouteConfig.single_image,
+                    arguments: {'navigationId': navigationId});
+              },
               coverImage: logic.homeMovieInfo.value?.sections[index]
                       .sectionContents[0].icon ??
                   "",

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/screen_util.dart';
 import 'package:get/get.dart';
 import 'package:movie_flz/routes/home/gess_you_like/model/GessYouLikeModel.dart';
-import 'package:movie_flz/routes/home/views/HomeMovieView.dart';
+import 'package:movie_flz/routes/home/home_root/views/HomeMovieView.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import 'logic.dart';

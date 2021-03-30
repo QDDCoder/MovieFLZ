@@ -23,7 +23,7 @@
 */
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:movie_flz/routes/home/view.dart';
+import 'package:movie_flz/routes/home/home_root/view.dart';
 import 'package:movie_flz/routes/look/view.dart';
 import 'package:movie_flz/routes/user_center/view.dart';
 
