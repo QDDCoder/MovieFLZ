@@ -283,37 +283,47 @@ class SwiperWidget extends StatelessWidget {
 class CategoryWidget extends StatelessWidget {
   final List<SectionContents> sectionContents;
 
-  const CategoryWidget({Key key, this.sectionContents}) : super(key: key);
+  final Function click_action;
+
+  const CategoryWidget({Key key, this.sectionContents, this.click_action})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: sectionContents
-          .map((e) => _build_home_category_item(e.title, e.icon))
+          .map((e) => _build_home_category_item(e.title, e.icon, e.targetId))
           .toList(),
     );
   }
 
-  Widget _build_home_category_item(String title, String iconUrl) {
+  Widget _build_home_category_item(
+      String title, String iconUrl, String jumpUrl) {
     return Expanded(
+      child: GestureDetector(
+        onTap: () {
+          click_action(jumpUrl);
+        },
         child: Container(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          CachedNetworkImage(
-            imageUrl: iconUrl,
-            width: ScreenUtil().setWidth(50),
-            fit: BoxFit.cover,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              CachedNetworkImage(
+                imageUrl: iconUrl,
+                width: ScreenUtil().setWidth(50),
+                fit: BoxFit.cover,
+              ),
+              Container(
+                margin: EdgeInsets.only(top: ScreenUtil().setHeight(8)),
+                child: Text(title),
+              ),
+            ],
           ),
-          Container(
-            margin: EdgeInsets.only(top: ScreenUtil().setHeight(8)),
-            child: Text(title),
-          ),
-        ],
+        ),
       ),
-    ));
+    );
   }
 }
 
@@ -1000,7 +1010,8 @@ class HorizontalTopListMovieItemWidget extends StatelessWidget {
 class SingleImageWidget extends StatelessWidget {
   final String coverImage;
   final Function click_action;
-  const SingleImageWidget({Key key, this.coverImage, this.click_action}) : super(key: key);
+  const SingleImageWidget({Key key, this.coverImage, this.click_action})
+      : super(key: key);
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -1122,7 +1133,7 @@ class GessYouLikeListItemWidget extends StatelessWidget {
                 )
               : Container(),
           Padding(
-            padding: EdgeInsets.only(top: ScreenUtil().setHeight(10)),
+            padding: EdgeInsets.only(top: ScreenUtil().setHeight(8)),
             child: Row(
               children: [
                 Container(
@@ -1146,7 +1157,6 @@ class GessYouLikeListItemWidget extends StatelessWidget {
               ],
             ),
           ),
-
           //评价的星星
         ],
       ),
@@ -1436,6 +1446,7 @@ class MoreMoviesListViewTopWidget extends StatelessWidget {
   final String subTitle;
   final String totalTitle;
   final String coverUrl;
+  final bool hidden_tool_bar;
 
   const MoreMoviesListViewTopWidget(
       {Key key,
@@ -1443,7 +1454,8 @@ class MoreMoviesListViewTopWidget extends StatelessWidget {
       this.title,
       this.subTitle,
       this.totalTitle,
-      this.coverUrl})
+      this.coverUrl,
+      this.hidden_tool_bar = false})
       : super(key: key);
 
   @override
@@ -1460,6 +1472,7 @@ class MoreMoviesListViewTopWidget extends StatelessWidget {
 
           //顶部的工具条
           _build_top_tools(),
+
           //中间的信息
           _build_center_info(),
 
@@ -1471,7 +1484,6 @@ class MoreMoviesListViewTopWidget extends StatelessWidget {
   }
 
   _build_bg_widget() {
-    print('什么玩意儿sss${coverUrl}');
     return Positioned.fill(
       child: coverUrl != ''
           ? Image.network(
@@ -1502,30 +1514,32 @@ class MoreMoviesListViewTopWidget extends StatelessWidget {
   }
 
   _build_top_tools() {
-    return Padding(
-      padding: EdgeInsets.only(
-          top: ScreenUtil().statusBarHeight + ScreenUtil().setHeight(10),
-          left: ScreenUtil().setWidth(10),
-          right: ScreenUtil().setWidth(10)),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          IconButton(
-            icon: Icon(
-              Icons.arrow_back_ios,
-              color: Colors.white,
+    return hidden_tool_bar
+        ? Container()
+        : Padding(
+            padding: EdgeInsets.only(
+                top: ScreenUtil().statusBarHeight + ScreenUtil().setHeight(10),
+                left: ScreenUtil().setWidth(10),
+                right: ScreenUtil().setWidth(10)),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                IconButton(
+                  icon: Icon(
+                    Icons.arrow_back_ios,
+                    color: Colors.white,
+                  ),
+                  onPressed: backAction,
+                ),
+                IconButton(
+                    icon: Icon(
+                      Icons.share,
+                      color: Colors.white,
+                    ),
+                    onPressed: () {}),
+              ],
             ),
-            onPressed: backAction,
-          ),
-          IconButton(
-              icon: Icon(
-                Icons.share,
-                color: Colors.white,
-              ),
-              onPressed: () {}),
-        ],
-      ),
-    );
+          );
   }
 
   _build_center_info() {

@@ -27,6 +27,7 @@ import 'package:movie_flz/routes/home/home_list_card_view/view.dart';
 import 'package:movie_flz/routes/home/home_root/view.dart';
 import 'package:movie_flz/routes/home/home_single_image/view.dart';
 import 'package:movie_flz/routes/home/more_movies/view.dart';
+import 'package:movie_flz/routes/home/movie_category/view.dart';
 import 'package:movie_flz/routes/home/top_movies_list_view_widget/view.dart';
 import 'package:movie_flz/routes/look/view.dart';
 import 'package:movie_flz/routes/user_center/setting/view.dart';
@@ -65,6 +66,9 @@ class RouteConfig {
   ///首页的单图片
   static final String single_image = '/home/singleImage';
 
+  ///首页的影视分类
+  static final String category_movie = '/home/allCategory';
+
   ///别名映射页面
   static final List<GetPage> getPages = [
     GetPage(name: main, page: () => MainPage()),
@@ -77,5 +81,6 @@ class RouteConfig {
     GetPage(name: list_card_more, page: () => HomeListCardViewPage()),
     GetPage(name: top_movies_list, page: () => TopMoviesListViewWidgetPage()),
     GetPage(name: single_image, page: () => HomeSingleImagePage()),
+    GetPage(name: category_movie, page: () => MovieCategoryPage()),
   ];
 }

@@ -155,6 +155,10 @@ class _HomeMoviePageState extends State<HomeMoviePage>
           color: Colors.white),
       //category的模块儿
       child: CategoryWidget(
+        click_action: (jumpAction) {
+          Get.toNamed(
+              jumpAction.toString().replaceAll('rrspjump://', '/home/'));
+        },
         sectionContents: logic.homeMovieInfo.value?.bean?.sectionContents ?? [],
       ),
     );
@@ -239,8 +243,6 @@ class _HomeMoviePageState extends State<HomeMoviePage>
               itemClickAction: (tapIndex) {
                 var id = logic.homeMovieInfo.value?.sections[index]
                     ?.sectionContents[tapIndex]?.seriesId;
-                print(
-                    "什么啊${logic.homeMovieInfo.value?.sections[index]?.sectionContents[tapIndex]}");
                 if (id != null) {
                   Get.toNamed(RouteConfig.look_more_movies,
                       arguments: {'id': '${id}'});
@@ -259,6 +261,8 @@ class _HomeMoviePageState extends State<HomeMoviePage>
                   'sectionId': logic.homeMovieInfo.value?.sections[index]
                       ?.sectionContents[tapIndex].sectionId
                 });
+                //测试
+                // Get.toNamed(RouteConfig.ttv);
               },
               clickRightMore: () {
                 //最右边的查看更多

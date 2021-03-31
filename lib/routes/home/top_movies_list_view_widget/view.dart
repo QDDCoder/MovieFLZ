@@ -22,9 +22,16 @@ class _TopMoviesListViewWidgetPageState
       Get.put(TopMoviesListViewListLogic());
 
   TabController _tabController;
+  RefreshController _refreshController =
+      RefreshController(initialRefresh: false);
+
+  ScrollController _scrollController = ScrollController();
+
+  double _scoll_offset = 0.0;
 
   @override
   void initState() {
+    //获取顶部的tap
     logic.getTopTapList(sectionId: Get.arguments['sectionId']).then(
       (value) {
         _tabController = TabController(
@@ -41,19 +48,25 @@ class _TopMoviesListViewWidgetPageState
           );
       },
     );
-    // print('===>>>${}');
+
+    //监听Scrol
+    _scrollController.addListener(() {
+      setState(() {
+        _scoll_offset = _scrollController.offset;
+      });
+    });
 
     super.initState();
   }
-
-  RefreshController _refreshController =
-      RefreshController(initialRefresh: false);
 
   _onRefresh() async {
     logicList
         .getMoreMoviesList(
             id: logic.topTapModel.value.tab[logic.top_select].id, refresh: true)
         .then((value) {
+      if (logicList.movieModel.value.isEnd) {
+        _refreshController.loadNoData();
+      }
       _refreshController.refreshCompleted();
     });
   }
@@ -64,90 +77,117 @@ class _TopMoviesListViewWidgetPageState
             id: logic.topTapModel.value.tab[logic.top_select].id,
             refresh: false)
         .then((value) {
+      if (logicList.movieModel.value.isEnd) {
+        _refreshController.loadNoData();
+      }
       _refreshController.loadComplete();
     });
-
-    // await logic.getMoreMoviesList(id: _seriesId, refresh: false).then((value) {
-    //   if (logic.movieModel.value.total ==
-    //       logic.movieModel.value.content.length) {
-    //     //停止刷新
-    //     _refreshController.loadNoData();
-    //   } else {
-    //     _refreshController.loadComplete();
-    //   }
-    // });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      //去除ListView的顶部空白
-      body: MediaQuery.removePadding(
-        removeTop: true,
-        context: context,
-        //创建ListView
-        child: PullAndPushWidget(
-            controller: _refreshController,
-            onRefresh: _onRefresh,
-            onLoading: _onLoading,
-            childWidget: _build_list_widget()),
+      body: Obx(
+        () {
+          return logic.topTapModel.value.tab.length > 0
+              ? DefaultTabController(
+                  length: logic.topTapModel.value.tab.length,
+                  child: NestedScrollView(
+                    controller: _scrollController,
+                    headerSliverBuilder: (context, innerBoxIsScrolled) {
+                      return [
+                        SliverOverlapAbsorber(
+                          handle:
+                              NestedScrollView.sliverOverlapAbsorberHandleFor(
+                                  context),
+                          //SliverAppBar
+                          sliver: _build_SliverAppBar(),
+                        ),
+                      ];
+                    },
+                    //scroll_body
+                    body: _build_scroll_body_view(),
+                  ),
+                )
+              : Container();
+        },
       ),
     );
   }
 
-  _build_list_widget() {
-    //listView 嵌套 主要是 顶部和list有嵌套覆盖
-    return ListView.builder(
-      itemCount: 1,
-      itemBuilder: (context, index) {
-        return Obx(() {
-          return Stack(
-            children: [
-              ///顶部的信息
-              MoreMoviesListViewTopWidget(
-                title: logic.topTapModel.value.title ?? '',
-                subTitle: logic.topTapModel.value.subTitle == null
-                    ? ''
-                    : logic.topTapModel.value.subTitle,
-                coverUrl: logicList.movieModel.value.content.length > 0
-                    ? logicList.movieModel.value.content.first.coverUrl
-                    : '',
-                totalTitle:
-                    'TOP ${logic.topTapModel.value.tab.length == 0 ? 20 : logic.topTapModel.value.tab[logic.top_select].relevanceCount}',
-                backAction: () {
-                  Get.back();
-                },
+  SliverAppBar _build_SliverAppBar() {
+    return SliverAppBar(
+      //为true则appbar不消失，在下拉时会多划出一段距离SliverAppBar才开始滚动
+      pinned: true,
+      //最大扩展高度
+      expandedHeight: ScreenUtil().setHeight(370),
+      primary: true,
+      title: Text(
+        logic.topTapModel.value.title,
+        style: TextStyle(
+            color: Colors.black45.withOpacity(_scoll_offset > 100 ? 1 : 0)),
+      ),
+      backgroundColor: Colors.white,
+      elevation: 0,
+      iconTheme: IconThemeData(
+          color: (_scoll_offset > 100) ? Colors.black45 : Colors.white),
+      actions: [
+        //右侧分享按钮
+        IconButton(
+            icon: Icon(
+              Icons.share,
+            ),
+            onPressed: () {}),
+      ],
+      flexibleSpace: _build_flexible_space_bar(),
+      bottom: _build_no_inkwell_bar(),
+    );
+  }
+
+  //顶部的扩展内容区域
+  _build_flexible_space_bar() {
+    return FlexibleSpaceBar(
+      collapseMode: CollapseMode.pin,
+      background: Stack(
+        children: [
+          Obx(() {
+            //顶部的背景图
+            return _build_top_bg();
+          }),
+          //tabbar的背景view
+          _build_tabbar_bg_view(),
+        ],
+      ),
+    );
+  }
+
+  //中间的TabBarView嵌套ListView
+  _build_scroll_body_view() {
+    return Container(
+      margin: EdgeInsets.only(top: ScreenUtil().setHeight(196)),
+      child: TabBarView(
+        controller: _tabController,
+        children: logic.topTapModel.value.tab.map((e) {
+          return Builder(builder: (context) {
+            //上下拉组件
+            return PullAndPushWidget(
+              controller: _refreshController,
+              onRefresh: _onRefresh,
+              onLoading: _onLoading,
+              childWidget: CustomScrollView(
+                key: PageStorageKey<String>(e.name),
+                slivers: [
+                  //列表
+                  ToplistViewBody(
+                    select_id: e.id,
+                  ),
+                ],
               ),
-              //中间的tapBar
-              _build_center_tab(),
-              Container(
-                margin: EdgeInsets.only(top: ScreenUtil().setHeight(447)),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(ScreenUtil().setWidth(10)),
-                      topLeft: Radius.circular(ScreenUtil().setWidth(10))),
-                  color: Colors.white,
-                ),
-                child: logic.topTapModel.value.tab.length == 0
-                    ? Container()
-                    : SizedBox(
-                        width: ScreenUtil().screenWidth,
-                        height: ScreenUtil().screenHeight,
-                        child: TabBarView(
-                          controller: _tabController,
-                          children: logic.topTapModel.value.tab.map((e) {
-                            return ContainerListView(
-                              select_id: e.id,
-                            );
-                          }).toList(),
-                        ),
-                      ),
-              ),
-            ],
-          );
-        });
-      },
+            );
+          });
+        }).toList(),
+      ),
     );
   }
 
@@ -168,48 +208,94 @@ class _TopMoviesListViewWidgetPageState
     }).toList();
   }
 
-  _build_center_tab() {
-    return _tabController == null
-        ? Container()
-        : Container(
-            margin: EdgeInsets.only(top: ScreenUtil().setHeight(380)),
-            height: ScreenUtil().setHeight(66),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(ScreenUtil().setWidth(10)),
-                topRight: Radius.circular(
-                  ScreenUtil().setWidth(10),
-                ),
-              ),
+  Widget _build_top_bg() {
+    return MoreMoviesListViewTopWidget(
+      hidden_tool_bar: true,
+      title: logic.topTapModel.value.title ?? '',
+      subTitle: logic.topTapModel.value.subTitle == null
+          ? ''
+          : logic.topTapModel.value.subTitle,
+      coverUrl: logicList.movieModel.value.content.length > 0
+          ? logicList.movieModel.value.content.first.coverUrl
+          : '',
+      totalTitle:
+          'TOP ${logic.topTapModel.value.tab.length == 0 ? 20 : logic.topTapModel.value.tab[logic.top_select].relevanceCount}',
+      backAction: () {
+        Get.back();
+      },
+    );
+  }
+
+  _build_tabbar_bg_view() {
+    return Align(
+      alignment: Alignment(0, 1),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(
+              ScreenUtil().setWidth(10),
             ),
-            child: TabBar(
-              indicatorColor: Colors.indigoAccent,
-              indicatorSize: TabBarIndicatorSize.label,
-              indicatorWeight: 3,
-              isScrollable: true,
-              controller: _tabController,
-              labelColor: Colors.black,
-              unselectedLabelColor: Colors.black45,
-              tabs: getTab(),
+            topRight: Radius.circular(
+              ScreenUtil().setWidth(10),
             ),
-          );
+          ),
+        ),
+        height: 48,
+      ),
+    );
+  }
+
+  /**
+   * 不点点击水波纹的TabBar
+   */
+  _build_no_inkwell_bar() {
+    return PreferredSize(
+      preferredSize: Size(0, ScreenUtil().setHeight(40)),
+      child: Container(
+        child: Theme(
+          data: ThemeData(
+            //默认显示的背景颜色
+            backgroundColor: Colors.transparent,
+            //点击的背景高亮颜色
+            highlightColor: Colors.transparent,
+            //点击水波纹颜色
+            splashColor: Colors.transparent,
+          ),
+          child: TabBar(
+            indicatorColor: Colors.indigoAccent,
+            indicatorSize: TabBarIndicatorSize.label,
+            indicatorWeight: 3,
+            isScrollable: true,
+            controller: _tabController,
+            labelColor: Colors.black,
+            unselectedLabelColor: Colors.black45,
+            //Tab的集合
+            tabs: getTab(),
+          ),
+        ),
+      ),
+    );
   }
 }
 
-class ContainerListView extends StatefulWidget {
+/**
+ * 底部的ListView
+ */
+class ToplistViewBody extends StatefulWidget {
   final int select_id;
 
-  const ContainerListView({Key key, this.select_id}) : super(key: key);
+  const ToplistViewBody({Key key, this.select_id}) : super(key: key);
+
   @override
-  _ContainerListViewState createState() => _ContainerListViewState();
+  _ToplistViewBodyState createState() => _ToplistViewBodyState();
 }
 
-class _ContainerListViewState extends State<ContainerListView> {
+class _ToplistViewBodyState extends State<ToplistViewBody> {
+  List<GessYouLikeItmeModel> content = List<GessYouLikeItmeModel>();
+
   final TopMoviesListViewListLogic logicList =
       Get.put(TopMoviesListViewListLogic());
-
-  List<GessYouLikeItmeModel> content = List<GessYouLikeItmeModel>();
 
   @override
   void initState() {
@@ -223,15 +309,19 @@ class _ContainerListViewState extends State<ContainerListView> {
   @override
   Widget build(BuildContext context) {
     return Obx(() {
-      return ListView.builder(
-        itemCount: logicList.movieModel.value.content.length,
-        shrinkWrap: true,
-        physics: NeverScrollableScrollPhysics(),
-        itemBuilder: (context, index) {
-          return GessYouLikeListItemWidget(
-            model: logicList.movieModel.value.content[index],
-          );
-        },
+      return SliverFixedExtentList(
+        itemExtent: ScreenUtil().setHeight(186),
+        delegate: SliverChildBuilderDelegate(
+          (BuildContext context, int index) {
+            return Container(
+              color: Colors.white,
+              child: GessYouLikeListItemWidget(
+                model: logicList.movieModel.value.content[index],
+              ),
+            );
+          },
+          childCount: logicList.movieModel.value.content.length,
+        ),
       );
     });
   }

@@ -13,9 +13,7 @@ class HomeMovieLogic extends GetxController {
   int course_index = 0;
 
   //获取用户项目列表
-  Future<void> getMovieInfo(
-      { //query参数，用于接收分页信息
-      refresh = true}) async {
+  Future<void> getMovieInfo({refresh = true}) async {
     _page_number = refresh ? 1 : _page_number + 1;
     //换一批
     course_index = refresh ? 0 : course_index;

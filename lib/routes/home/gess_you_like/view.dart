@@ -42,6 +42,7 @@ class _GessYouLikePageState extends State<GessYouLikePage> {
       return Scaffold(
         backgroundColor: Color(0xFFefefef),
         appBar: AppBar(
+          backgroundColor: Colors.indigoAccent,
           title: Text('猜你喜欢'),
         ),
         body: PullAndPushWidget(

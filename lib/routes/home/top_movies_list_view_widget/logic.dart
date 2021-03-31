@@ -11,6 +11,12 @@ class TopMoviesListViewWidgetLogic extends GetxController {
   final topTapModel = MoreMoviesListTopTapModel().obs;
   int top_select = 0;
 
+  final color_scroll = 0.0.obs;
+
+  update_color_scroll(double scroll_c) {
+    color_scroll.value = scroll_c;
+  }
+
   update_top_select(int topSelect) {
     top_select = topSelect;
   }
@@ -43,10 +49,7 @@ class TopMoviesListViewListLogic extends GetxController {
   final movieModel = MoreMovieModel().obs;
 
   //获取用户项目列表
-  Future<MoreMovieModel> getMoreMoviesList(
-      { //query参数，用于接收分页信息
-      refresh = false,
-      id}) async {
+  Future<MoreMovieModel> getMoreMoviesList({refresh = false, id}) async {
     _page_number = refresh ? 1 : _page_number + 1;
 
     var r = await NetTools.dio.get<String>(

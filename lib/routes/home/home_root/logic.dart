@@ -9,20 +9,19 @@ import 'model/TopCategory.dart';
 class HomeLogic extends GetxController {
   final topCategory = TopCategory().obs;
   //获取用户项目列表
-  Future<void> getCategory(
-      { //query参数，用于接收分页信息
-      refresh = false}) async {
+  Future<void> getCategory({refresh = false}) async {
     var r = await NetTools.dio.get<String>(
       "v3plus/index/category",
     );
     //缓存
     Global.netCache.cache.clear();
 
-    topCategory.update((val) {
-      val.filmTelevsionList =
-          TopCategory.fromJson(convert.jsonDecode(r.data)['data'])
-              .filmTelevsionList;
-      val.filmTelevsionList.insert(
+    topCategory.update(
+      (val) {
+        val.filmTelevsionList =
+            TopCategory.fromJson(convert.jsonDecode(r.data)['data'])
+                .filmTelevsionList;
+        val.filmTelevsionList.insert(
           0,
           FilmTelevsionList(
             imgUrl: '',
@@ -34,8 +33,10 @@ class HomeLogic extends GetxController {
             enabled: '1',
             key: '0',
             seq: 0,
-          ));
-    });
+          ),
+        );
+      },
+    );
     //json 转 Map 转 更新
   }
 }

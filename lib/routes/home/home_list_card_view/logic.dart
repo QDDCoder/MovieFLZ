@@ -12,10 +12,7 @@ class HomeListCardViewLogic extends GetxController {
   int _page_number = 1;
 
   //获取用户项目列表
-  Future<void> getMoreMoviesList(
-      { //query参数，用于接收分页信息
-      refresh = false,
-      sectionId}) async {
+  Future<void> getMoreMoviesList({refresh = false, sectionId}) async {
     _page_number = refresh ? 1 : _page_number + 1;
 
     var r = await NetTools.dio.get<String>(

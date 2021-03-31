@@ -9,9 +9,7 @@ class GessYouLikeLogic extends GetxController {
   final gessYouLikeList = GessYouLikeModel().obs;
 
   //获取猜你喜欢的列白数据
-  Future<void> getGessYouLikeList(
-      { //query参数，用于接收分页信息
-      refresh = true}) async {
+  Future<void> getGessYouLikeList({refresh = true}) async {
     var r = await NetTools.dio.get<String>(
       "drama/app/guess_user_like?isRecByUser=1",
     );

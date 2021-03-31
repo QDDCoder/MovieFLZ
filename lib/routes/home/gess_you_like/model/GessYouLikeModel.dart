@@ -16,7 +16,7 @@ class GessYouLikeItmeModel {
   String title;
   String subTitle;
   String coverUrl;
-  int year;
+  String year;
   List<String> areaList;
   List<String> plotTypeList;
   String dramaType;
@@ -52,7 +52,7 @@ class GessYouLikeItmeModel {
     title = json['title'];
     subTitle = json['subTitle'];
     coverUrl = json['coverUrl'];
-    year = json['year'];
+    year = '${json['year']}';
     areaList = json['areaList'].cast<String>();
     plotTypeList = json['plotTypeList'].cast<String>();
     dramaType = json['dramaType'];

@@ -364,7 +364,7 @@ class SectionContents {
     subTitle = json['subTitle'];
     coverUrl = json['coverUrl'];
     dramaType = json['dramaType'];
-    score = json['score'];
+    score = double.parse('${json['score'] ?? 0.0}');
     feeMode = json['feeMode'];
     favorite = json['favorite'];
     id = json['id'];
