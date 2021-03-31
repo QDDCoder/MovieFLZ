@@ -290,7 +290,7 @@ class SectionContents {
   int dramaId;
   String title;
   String icon;
-  String subTitle;
+  String subTitle = '';
   String coverUrl;
   String dramaType;
   double score;
@@ -361,7 +361,7 @@ class SectionContents {
     dramaId = json['dramaId'];
     title = json['title'];
     icon = json['icon'];
-    subTitle = json['subTitle'];
+    subTitle = json['subTitle'] ?? '';
     coverUrl = json['coverUrl'];
     dramaType = json['dramaType'];
     score = double.parse('${json['score'] ?? 0.0}');
