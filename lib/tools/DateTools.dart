@@ -277,6 +277,38 @@ class LZDateUtils {
   static bool isLeapYearByYear(int year) {
     return year % 4 == 0 && year % 100 != 0 || year % 400 == 0;
   }
+
+  ///某年某月获取当月多少天
+  static int normalMonthHaveDays(year, month) {
+    var dayCount = DateTime(year, month + 1, 0).day;
+    return dayCount;
+  }
+
+  ///当前年份某月份获取当月多少天
+  static int currentYearNormalMonthHaveDays(month) {
+    return normalMonthHaveDays(DateTime.now().year, month);
+  }
+
+  ///当前年份某月份获取当月多少天
+  static int currentYearMonthHaveDays() {
+    // 计算下个月1号的前一天是几号，得出结果
+    return normalMonthHaveDays(DateTime.now().year, DateTime.now().month);
+  }
+
+  ///获取当月的星期几的集合
+  static List<Map> currentMonthWeekDays(year, month) {
+    // 计算下个月1号的前一天是几号，得出结果
+    var days = currentYearNormalMonthHaveDays(month);
+    List<Map> _days = List<Map>();
+    for (int i = 1; i <= days; i++) {
+      Map<String, dynamic> map = Map();
+      map['day'] = i;
+      map['weakday'] =
+          getWeekday(DateTime(year, month, i)).replaceAll('星期', '');
+      _days.add(map);
+    }
+    return _days;
+  }
 }
 
 /// month->days.

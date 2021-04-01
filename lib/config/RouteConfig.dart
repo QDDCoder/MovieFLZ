@@ -28,6 +28,7 @@ import 'package:movie_flz/routes/home/home_root/view.dart';
 import 'package:movie_flz/routes/home/home_single_image/view.dart';
 import 'package:movie_flz/routes/home/more_movies/view.dart';
 import 'package:movie_flz/routes/home/movie_category/view.dart';
+import 'package:movie_flz/routes/home/schedule_list/view.dart';
 import 'package:movie_flz/routes/home/season_rank/view.dart';
 import 'package:movie_flz/routes/home/top_movies_list_view_widget/view.dart';
 import 'package:movie_flz/routes/look/view.dart';
@@ -73,6 +74,9 @@ class RouteConfig {
   ///首页排行榜
   static final String season_rank = '/home/seasonRank';
 
+  ///电影排期
+  static final String schedule_page = '/home/schedule';
+
   ///别名映射页面
   static final List<GetPage> getPages = [
     GetPage(name: main, page: () => MainPage()),
@@ -87,5 +91,6 @@ class RouteConfig {
     GetPage(name: single_image, page: () => HomeSingleImagePage()),
     GetPage(name: category_movie, page: () => MovieCategoryPage()),
     GetPage(name: season_rank, page: () => SeasonRankPage()),
+    GetPage(name: schedule_page, page: () => ScheduleListPage()),
   ];
 }
