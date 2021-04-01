@@ -302,9 +302,19 @@ class LZDateUtils {
     List<Map> _days = List<Map>();
     for (int i = 1; i <= days; i++) {
       Map<String, dynamic> map = Map();
-      map['day'] = i;
+
       map['weakday'] =
           getWeekday(DateTime(year, month, i)).replaceAll('星期', '');
+
+      //是否选中了
+      map['select'] = 0;
+      //是否是今天
+      map['day'] = i;
+      if ((month == DateTime.now().month) && (DateTime.now().day == i)) {
+        map['today'] = 1;
+      } else {
+        map['today'] = 0;
+      }
       _days.add(map);
     }
     return _days;

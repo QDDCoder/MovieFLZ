@@ -21,16 +21,16 @@
 #               代码无BUG!
 # ======================================================
 */
-class SeasonRankListModel {
-  List<SeasonRankListItemModel> scheduleList = List<SeasonRankListItemModel>();
+class ScheduleListModel {
+  List<ScheduleListItemModel> scheduleList = List<ScheduleListItemModel>();
 
-  SeasonRankListModel();
+  ScheduleListModel();
 
-  SeasonRankListModel.fromJson(Map<String, dynamic> json) {
+  ScheduleListModel.fromJson(Map<String, dynamic> json) {
     if (json['scheduleList'] != null) {
-      scheduleList = new List<SeasonRankListItemModel>();
+      scheduleList = new List<ScheduleListItemModel>();
       json['scheduleList'].forEach((v) {
-        scheduleList.add(new SeasonRankListItemModel.fromJson(v));
+        scheduleList.add(new ScheduleListItemModel.fromJson(v));
       });
     }
   }
@@ -44,7 +44,7 @@ class SeasonRankListModel {
   }
 }
 
-class SeasonRankListItemModel {
+class ScheduleListItemModel {
   Null seriesId;
   String type;
   int seasonId;
@@ -66,7 +66,7 @@ class SeasonRankListItemModel {
   String seasonCoverUrl;
   String feeMode;
 
-  SeasonRankListItemModel(
+  ScheduleListItemModel(
       {this.seriesId,
       this.type,
       this.seasonId,
@@ -88,7 +88,7 @@ class SeasonRankListItemModel {
       this.seasonCoverUrl,
       this.feeMode});
 
-  SeasonRankListItemModel.fromJson(Map<String, dynamic> json) {
+  ScheduleListItemModel.fromJson(Map<String, dynamic> json) {
     seriesId = json['seriesId'];
     type = json['type'];
     seasonId = json['seasonId'];
