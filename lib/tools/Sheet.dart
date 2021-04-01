@@ -48,36 +48,31 @@ Future<int> showCustomBottomSheet({
           Navigator.pop(context, -1);
         },
         child: Container(
-            color: Color(0x00ffffff), // 设置颜色后点击事件才有效
+            // 设置颜色后点击事件才有效
             alignment: Alignment.bottomCenter,
+            color: Color(0x00ffffff),
             padding: EdgeInsets.fromLTRB(paddingSize, 0, paddingSize,
                 MediaQuery.of(context).padding.bottom),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
-                GestureDetector(
-                  onTap: () {},
-                  child: Container(
-                    padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: (children.length == 0)
-                            ? BorderRadius.all(Radius.circular(radiusSize))
-                            : BorderRadius.only(
-                                topLeft: Radius.circular(radiusSize),
-                                topRight: Radius.circular(radiusSize))),
-                    alignment: Alignment.center,
-                    constraints: BoxConstraints(
-                      minHeight: 45,
-                    ),
-                    child: Text(
-                      title,
-                      textAlign: TextAlign.center,
-                      style:
-                          TextStyle(color: titleColor, fontSize: titleFontSize),
-                    ),
-                  ),
-                ),
+                title != ''
+                    ? GestureDetector(
+                        onTap: () {},
+                        child: Container(
+                          alignment: Alignment.center,
+                          constraints: BoxConstraints(
+                            minHeight: 45,
+                          ),
+                          child: Text(
+                            title,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                color: titleColor, fontSize: titleFontSize),
+                          ),
+                        ),
+                      )
+                    : Container(),
                 Column(children: children),
                 Container(
                   height: 10,

@@ -15,3 +15,20 @@
 //   }
 //   return result.toString();
 // }
+
+String changeStringList(List<String> list) {
+  String tempString = '';
+  list.forEach((element) {
+    tempString += element;
+  });
+  return tempString;
+}
+
+// String changeType(List<String> list) {
+//   String tempString = '';
+//   list.forEach((element) {
+//     tempString += ' ${element}';
+//   });
+//   // tempString.replaceFirst(' ', '');
+//   return tempString;
+// }

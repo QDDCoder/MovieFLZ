@@ -156,8 +156,13 @@ class _HomeMoviePageState extends State<HomeMoviePage>
       //category的模块儿
       child: CategoryWidget(
         click_action: (jumpAction) {
-          Get.toNamed(
-              jumpAction.toString().replaceAll('rrspjump://', '/home/'));
+          var jumpUrl =
+              jumpAction.toString().replaceAll('rrspjump://', '/home/');
+          if (jumpUrl.contains('seasonRank')) {
+            Get.toNamed(jumpUrl, arguments: {'sectionId': 3177});
+          } else {
+            Get.toNamed(jumpUrl);
+          }
         },
         sectionContents: logic.homeMovieInfo.value?.bean?.sectionContents ?? [],
       ),

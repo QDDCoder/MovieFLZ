@@ -2,9 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:movie_flz/routes/home/home_root/views/HomeMovieView.dart';
+import 'package:movie_flz/tools/StringTools.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import 'logic.dart';
+import 'model/GessYouLikeModel.dart';
 
 class GessYouLikePage extends StatefulWidget {
   @override
@@ -51,9 +53,17 @@ class _GessYouLikePageState extends State<GessYouLikePage> {
           onLoading: _onLoading,
           childWidget: ListView.builder(
             itemBuilder: (context, index) {
+              //
+              GessYouLikeItmeModel mode =
+                  logic.gessYouLikeList.value.itemList[index];
               //电影的item
               return GessYouLikeListItemWidget(
-                model: logic.gessYouLikeList.value.itemList[index],
+                coverUrl: mode.coverUrl,
+                name: mode.title,
+                score: mode.score,
+                type:
+                    '${mode.dramaType}/${mode.year}/${changeStringList(mode.areaList)}/${changeStringList(mode.plotTypeList).replaceFirst(' ', '')}',
+                actor: changeStringList(mode.actorList),
               );
             },
             itemCount: logic.gessYouLikeList.value.itemList.length,

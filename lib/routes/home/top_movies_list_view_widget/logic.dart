@@ -24,7 +24,7 @@ class TopMoviesListViewWidgetLogic extends GetxController {
   //获取顶部的tap
   Future<void> getTopTapList({sectionId}) async {
     var r = await NetTools.dio.get<String>(
-      "index/series/top/detail/tab?sectionId=3177",
+      "index/series/top/detail/tab?sectionId=${sectionId}",
     );
     //缓存
     Global.netCache.cache.clear();

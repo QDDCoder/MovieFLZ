@@ -43,7 +43,8 @@ class NetTools {
       'clientVersion': '5.2.1',
       'token': 'rrtv-af3981d1c33da46f560486c850f2c6ab975fd6ef',
       'sign': '2627cc845f66ec7616dadfcc04c9c3ef',
-      'sm': '202101141908359bf2c28b063abb12681e76b1f1b59b60019f5933ae9f6867'
+      'sm': '202101141908359bf2c28b063abb12681e76b1f1b59b60019f5933ae9f6867',
+      // 't': '1617254737364',
       // 'Cookie': 'JSESSIONID=EC4FDEB3A1CEB2CEC793BE3439624993',
     },
   ));

@@ -16,27 +16,23 @@ class HomeLogic extends GetxController {
     //缓存
     Global.netCache.cache.clear();
 
-    topCategory.update(
-      (val) {
-        val.filmTelevsionList =
-            TopCategory.fromJson(convert.jsonDecode(r.data)['data'])
-                .filmTelevsionList;
-        val.filmTelevsionList.insert(
+    topCategory.update((val) {
+      val.filmTelevsionList =
+          TopCategory.fromJson(convert.jsonDecode(r.data)['data'])
+              .filmTelevsionList;
+      val.filmTelevsionList.insert(
           0,
           FilmTelevsionList(
-            imgUrl: '',
-            createTime: 0,
-            name: '精选',
-            updateTime: 0,
-            id: 1,
-            content: '',
-            enabled: '1',
-            key: '0',
-            seq: 0,
-          ),
-        );
-      },
-    );
+              imgUrl: '',
+              createTime: 0,
+              name: '精选',
+              updateTime: 0,
+              id: 1,
+              content: '',
+              enabled: '1',
+              key: '0',
+              seq: 0));
+    });
     //json 转 Map 转 更新
   }
 }

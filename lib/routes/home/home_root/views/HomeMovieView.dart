@@ -41,6 +41,7 @@ import 'package:movie_flz/routes/home/gess_you_like/model/GessYouLikeModel.dart'
 import 'package:movie_flz/routes/home/home_list_card_view/model/ListCardViewModel.dart';
 import 'package:movie_flz/routes/home/home_movie/Model/HomeMovieModel.dart';
 import 'package:movie_flz/tools/ColorTools.dart';
+import 'package:movie_flz/tools/StringTools.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 /**
@@ -1036,10 +1037,15 @@ class SingleImageWidget extends StatelessWidget {
  * 猜你喜欢的List Item
  */
 class GessYouLikeListItemWidget extends StatelessWidget {
-  //数据model
-  final GessYouLikeItmeModel model;
+  final String coverUrl;
+  final String name;
+  final double score;
+  final String actor;
+  final String type;
 
-  const GessYouLikeListItemWidget({Key key, this.model}) : super(key: key);
+  const GessYouLikeListItemWidget(
+      {Key key, this.coverUrl, this.name, this.score, this.actor, this.type})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -1073,7 +1079,7 @@ class GessYouLikeListItemWidget extends StatelessWidget {
     return ClipRRect(
       borderRadius: BorderRadius.circular(ScreenUtil().setWidth(14)),
       child: Image.network(
-        model.coverUrl,
+        coverUrl,
         fit: BoxFit.cover,
         height: ScreenUtil().setHeight(158),
         width: ScreenUtil().setWidth(140),
@@ -1091,7 +1097,7 @@ class GessYouLikeListItemWidget extends StatelessWidget {
           Container(
             width: ScreenUtil().setWidth(460),
             child: Text(
-              model.title,
+              name,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
@@ -1107,7 +1113,8 @@ class GessYouLikeListItemWidget extends StatelessWidget {
                 bottom: ScreenUtil().setHeight(6)),
             width: ScreenUtil().setWidth(440),
             child: Text(
-              '${model.dramaType}/${model.year}/${_changeStringList(model.areaList)}/${_changeType(model.plotTypeList)}',
+              type,
+              // '${model.dramaType}/${model.year}/${_changeStringList(model.areaList)}/${_changeType(model.plotTypeList)}',
               style: TextStyle(
                 color: Colors.black54,
                 fontSize: 13,
@@ -1116,22 +1123,36 @@ class GessYouLikeListItemWidget extends StatelessWidget {
               overflow: TextOverflow.ellipsis, // 显示不完，就在后面显示点点
             ),
           ),
-          (_changeStringList(model.actorList).isNotEmpty)
-              ? Container(
-                  margin: EdgeInsets.only(
-                      top: ScreenUtil().setHeight(6),
-                      bottom: ScreenUtil().setHeight(4)),
-                  width: ScreenUtil().setWidth(440),
-                  child: Text(
-                    _changeStringList(model.actorList),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis, // 显示不完，就在后面显示点点
-                    style: TextStyle(color: Colors.black54, fontSize: 13),
-                    strutStyle: StrutStyle(
-                        forceStrutHeight: true, height: 0.48, leading: 0.6),
-                  ),
-                )
-              : Container(),
+          Container(
+            margin: EdgeInsets.only(
+                top: ScreenUtil().setHeight(6),
+                bottom: ScreenUtil().setHeight(4)),
+            width: ScreenUtil().setWidth(440),
+            child: Text(
+              actor,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis, // 显示不完，就在后面显示点点
+              style: TextStyle(color: Colors.black54, fontSize: 13),
+              strutStyle: StrutStyle(
+                  forceStrutHeight: true, height: 0.48, leading: 0.6),
+            ),
+          ),
+          // (_changeStringList(model.actorList).isNotEmpty)
+          //     ? Container(
+          //         margin: EdgeInsets.only(
+          //             top: ScreenUtil().setHeight(6),
+          //             bottom: ScreenUtil().setHeight(4)),
+          //         width: ScreenUtil().setWidth(440),
+          //         child: Text(
+          //           _changeStringList(model.actorList),
+          //           maxLines: 2,
+          //           overflow: TextOverflow.ellipsis, // 显示不完，就在后面显示点点
+          //           style: TextStyle(color: Colors.black54, fontSize: 13),
+          //           strutStyle: StrutStyle(
+          //               forceStrutHeight: true, height: 0.48, leading: 0.6),
+          //         ),
+          //       )
+          //     : Container(),
           Padding(
             padding: EdgeInsets.only(top: ScreenUtil().setHeight(8)),
             child: Row(
@@ -1140,7 +1161,7 @@ class GessYouLikeListItemWidget extends StatelessWidget {
                   margin: EdgeInsets.only(right: ScreenUtil().setWidth(6)),
                   child: CustomRating(
                     max: 5,
-                    score: model.score / 2,
+                    score: score / 2,
                     star: Star(
                         progress: 0,
                         num: 5,
@@ -1151,7 +1172,7 @@ class GessYouLikeListItemWidget extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  '${model.score}',
+                  '${score}',
                   style: TextStyle(fontSize: 14, color: Colors.black54),
                 ),
               ],
@@ -1609,7 +1630,13 @@ class MoreMoviesListViewListWidget extends StatelessWidget {
         itemCount: (content.length ?? 0),
         itemBuilder: (context, index) {
           return GessYouLikeListItemWidget(
-            model: content[index],
+            coverUrl: content[index].coverUrl,
+            name: content[index].title,
+            score: content[index].score,
+            type:
+                '${content[index].dramaType}/${content[index].year}/${changeStringList(content[index].areaList)}/${changeStringList(content[index].plotTypeList).replaceFirst(' ', '')}',
+            actor: changeStringList(content[index].actorList),
+            // model: content[index],
           );
         },
       ),
@@ -1620,47 +1647,43 @@ class MoreMoviesListViewListWidget extends StatelessWidget {
 /**
  * 检测滚动方向
  */
-class SwipeDetector extends StatefulWidget {
-  final Function() onSwipeUp;
-  final Function() onSwipeDown;
+class ScrollDriectionListion extends StatelessWidget {
   final Widget child;
+  final Function offset_callback;
 
-  const SwipeDetector({Key key, this.onSwipeUp, this.onSwipeDown, this.child})
+  //手指移动的位置
+  double _lastMoveY = 0.0;
+  //手指按下的位置
+  double _downY = 0.0;
+
+  ScrollDriectionListion({Key key, this.offset_callback, this.child})
       : super(key: key);
-  @override
-  _SwipeDetectorState createState() => _SwipeDetectorState();
-}
-
-class _SwipeDetectorState extends State<SwipeDetector> {
-  DragStartDetails startVerticalDragDetails;
-  DragUpdateDetails updateVerticalDragDetails;
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-        onVerticalDragStart: (dragDetails) {
-          startVerticalDragDetails = dragDetails;
-        },
-        onVerticalDragUpdate: (dragDetails) {
-          updateVerticalDragDetails = dragDetails;
-        },
-        onVerticalDragEnd: (endDetails) {
-          double dx = updateVerticalDragDetails.globalPosition.dx -
-              startVerticalDragDetails.globalPosition.dx;
-          double dy = updateVerticalDragDetails.globalPosition.dy -
-              startVerticalDragDetails.globalPosition.dy;
-          double velocity = endDetails.primaryVelocity;
+    return Listener(
+      onPointerDown: (PointerDownEvent event) {
+        //手指按下的距离
+        _downY = event.position.distance;
+      },
+      onPointerMove: (PointerMoveEvent event) {
+        //手指移动的距离
+        var position = event.position.distance;
+        //判断距离差
+        var detal = position - _lastMoveY;
+        if (detal > 0) {
+          //手指移动的距离
+          //向下移动:detal
+          double pos = (position - _downY);
+        } else {
+          // 所摸点长度 +滑动距离  = IistView的长度  说明到达底部
+          //向上移动:detal
+        }
+        offset_callback(detal);
 
-          //Convert values to be positive
-          if (dx < 0) dx = -dx;
-          if (dy < 0) dy = -dy;
-
-          if (velocity < 0) {
-            widget.onSwipeUp();
-          } else {
-            widget.onSwipeDown();
-          }
-        },
-        child: widget.child);
+        _lastMoveY = position;
+      },
+      child: child,
+    );
   }
 }

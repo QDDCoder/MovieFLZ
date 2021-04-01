@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/screen_util.dart';
 import 'package:get/get.dart';
 import 'package:movie_flz/routes/home/gess_you_like/model/GessYouLikeModel.dart';
 import 'package:movie_flz/routes/home/home_root/views/HomeMovieView.dart';
+import 'package:movie_flz/tools/StringTools.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import 'logic.dart';
@@ -313,12 +314,19 @@ class _ToplistViewBodyState extends State<ToplistViewBody> {
         itemExtent: ScreenUtil().setHeight(186),
         delegate: SliverChildBuilderDelegate(
           (BuildContext context, int index) {
+            GessYouLikeItmeModel mode =
+                logicList.movieModel.value.content[index];
+            //电影的item
             return Container(
-              color: Colors.white,
-              child: GessYouLikeListItemWidget(
-                model: logicList.movieModel.value.content[index],
-              ),
-            );
+                color: Colors.white,
+                child: GessYouLikeListItemWidget(
+                  coverUrl: mode.coverUrl,
+                  name: mode.title,
+                  score: mode.score,
+                  type:
+                      '${mode.dramaType}/${mode.year}/${changeStringList(mode.areaList)}/${changeStringList(mode.plotTypeList).replaceFirst(' ', '')}',
+                  actor: changeStringList(mode.actorList),
+                ));
           },
           childCount: logicList.movieModel.value.content.length,
         ),

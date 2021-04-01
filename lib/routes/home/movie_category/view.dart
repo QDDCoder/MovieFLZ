@@ -24,14 +24,35 @@ class _MovieCategoryPageState extends State<MovieCategoryPage> {
 
   ScrollController _scrollController = ScrollController();
 
+  //gridview 偏移了150 bar偏移了70 所以offset滚动的距离
+  double realOffset = ScreenUtil().setHeight(500 - 80);
+
   @override
   void initState() {
     // TODO: implement initState
     logic.getCategoryTopModel(ageLimit: 0);
-    _scrollController.addListener(() {
-      print('------->>>>${_scrollController.offset}');
-    });
     super.initState();
+  }
+
+  /**
+   * 处理上下滑 自动吸顶的问题
+   */
+  handle_scroll_top(double detal_gl) {
+    if (detal_gl > 0) {
+      //向下滑动了
+      if (_scrollController.offset <= realOffset.truncate() &&
+          _scrollController.offset > ScreenUtil().setHeight(0)) {
+        _scrollController.animateTo(ScreenUtil().setHeight(0),
+            duration: Duration(milliseconds: 300), curve: Curves.easeIn);
+      }
+    } else if (detal_gl < 0) {
+      //向上滑动了
+      if (_scrollController.offset < realOffset.truncate() &&
+          _scrollController.offset > ScreenUtil().setHeight(0)) {
+        _scrollController.animateTo(ScreenUtil().setHeight(500),
+            duration: Duration(milliseconds: 300), curve: Curves.easeIn);
+      }
+    }
   }
 
   _onRefresh() async {
@@ -46,33 +67,11 @@ class _MovieCategoryPageState extends State<MovieCategoryPage> {
     });
   }
 
-  //手指移动的位置
-  double _lastMoveY = 0.0;
-  //手指按下的位置
-  double _downY = 0.0;
-
   @override
   Widget build(BuildContext context) {
-    return Listener(
-      onPointerDown: (PointerDownEvent event) {
-        //手指按下的距离
-        _downY = event.position.distance;
-      },
-      onPointerMove: (PointerMoveEvent event) {
-        //手指移动的距离
-        var position = event.position.distance;
-        //判断距离差
-        var detal = position - _lastMoveY;
-        if (detal > 0) {
-          //手指移动的距离
-          double pos = (position - _downY);
-          print("================向下移动================${detal}");
-        } else {
-          // 所摸点长度 +滑动距离  = IistView的长度  说明到达底部
-          print("================向上移动================${detal}");
-        }
-        _lastMoveY = position;
-      },
+    //监听滚动方向
+    return ScrollDriectionListion(
+      offset_callback: handle_scroll_top,
       child: Scaffold(
         body: NestedScrollView(
           controller: _scrollController,
@@ -105,6 +104,7 @@ class _MovieCategoryPageState extends State<MovieCategoryPage> {
             onRefresh: _onRefresh,
             onLoading: _onLoading,
             childWidget: CustomScrollView(
+              // controller: _grid_view_controller,
               slivers: [
                 //列表
                 _build_scroll_body_view(),
@@ -139,7 +139,7 @@ class _MovieCategoryPageState extends State<MovieCategoryPage> {
     return FlexibleSpaceBar(
       collapseMode: CollapseMode.pin,
       background: Padding(
-        padding: EdgeInsets.only(top: 54),
+        padding: EdgeInsets.only(top: ScreenUtil().setHeight(70)),
         child: Obx(() {
           return ListView.builder(
             shrinkWrap: true, //为true可以解决子控件必须设置高度的问题
@@ -164,39 +164,7 @@ class _MovieCategoryPageState extends State<MovieCategoryPage> {
         padding: EdgeInsets.only(
             left: ScreenUtil().setWidth(20), right: ScreenUtil().setWidth(20)),
         itemBuilder: (context, indexIn) {
-          return GestureDetector(
-            onTap: () {
-              logic.update_select_index(index, indexIn);
-            },
-            child: Container(
-              alignment: Alignment.centerLeft,
-              padding: EdgeInsets.only(
-                left: ScreenUtil().setWidth(20),
-                right: ScreenUtil().setWidth(20),
-              ),
-              decoration: BoxDecoration(
-                  color: logic.topCategoryModel.value.data[index]
-                          .dramaFilterItemList[indexIn].isSelect
-                      ? hexToColor('#f9f9f9')
-                      : Colors.white,
-                  borderRadius:
-                      BorderRadius.circular(ScreenUtil().setWidth(30))),
-              child: Text(
-                logic.topCategoryModel.value.data[index]
-                    .dramaFilterItemList[indexIn].displayName,
-                style: TextStyle(
-                    fontWeight: logic.topCategoryModel.value.data[index]
-                            .dramaFilterItemList[indexIn].isSelect
-                        ? FontWeight.w700
-                        : FontWeight.w500,
-                    fontSize: 16,
-                    color: logic.topCategoryModel.value.data[index]
-                            .dramaFilterItemList[indexIn].isSelect
-                        ? Colors.blue
-                        : Colors.black45),
-              ),
-            ),
-          );
+          return _build_list_view_item(index, indexIn);
         },
         separatorBuilder: (context, index) {
           return SizedBox(
@@ -205,6 +173,44 @@ class _MovieCategoryPageState extends State<MovieCategoryPage> {
         },
         itemCount:
             logic.topCategoryModel.value.data[index].dramaFilterItemList.length,
+      ),
+    );
+  }
+
+  /**
+   * 创建横向的listview的item
+   */
+  _build_list_view_item(int index, int indexIn) {
+    return GestureDetector(
+      onTap: () {
+        logic.update_select_index(index, indexIn);
+      },
+      child: Container(
+        alignment: Alignment.centerLeft,
+        padding: EdgeInsets.only(
+          left: ScreenUtil().setWidth(20),
+          right: ScreenUtil().setWidth(20),
+        ),
+        decoration: BoxDecoration(
+            color: logic.topCategoryModel.value.data[index]
+                    .dramaFilterItemList[indexIn].isSelect
+                ? hexToColor('#f9f9f9')
+                : Colors.white,
+            borderRadius: BorderRadius.circular(ScreenUtil().setWidth(30))),
+        child: Text(
+          logic.topCategoryModel.value.data[index].dramaFilterItemList[indexIn]
+              .displayName,
+          style: TextStyle(
+              fontWeight: logic.topCategoryModel.value.data[index]
+                      .dramaFilterItemList[indexIn].isSelect
+                  ? FontWeight.w700
+                  : FontWeight.w500,
+              fontSize: 16,
+              color: logic.topCategoryModel.value.data[index]
+                      .dramaFilterItemList[indexIn].isSelect
+                  ? Colors.blue
+                  : Colors.black45),
+        ),
       ),
     );
   }
