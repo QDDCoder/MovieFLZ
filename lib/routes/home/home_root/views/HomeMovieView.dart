@@ -40,6 +40,7 @@ import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:movie_flz/routes/home/gess_you_like/model/GessYouLikeModel.dart';
 import 'package:movie_flz/routes/home/home_list_card_view/model/ListCardViewModel.dart';
 import 'package:movie_flz/routes/home/home_movie/Model/HomeMovieModel.dart';
+import 'package:movie_flz/tools/Button+Extension.dart';
 import 'package:movie_flz/tools/ColorTools.dart';
 import 'package:movie_flz/tools/StringTools.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -237,8 +238,9 @@ class MovieSectionHead extends StatelessWidget {
  */
 class SwiperWidget extends StatelessWidget {
   final List<String> images;
+  final Alignment alignment;
 
-  const SwiperWidget({Key key, this.images}) : super(key: key);
+  const SwiperWidget({Key key, this.images, this.alignment}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -258,13 +260,13 @@ class SwiperWidget extends StatelessWidget {
         itemCount: images.length,
         // 底部分页器
         pagination: SwiperPagination(
-            alignment: Alignment(0.86, 0.6),
+            alignment: alignment,
             builder: DotSwiperPaginationBuilder(
                 space: ScreenUtil().setWidth(6),
                 color: Colors.grey,
                 activeColor: Colors.white70,
-                size: ScreenUtil().setWidth(10),
-                activeSize: ScreenUtil().setWidth(10))),
+                size: ScreenUtil().setWidth(12),
+                activeSize: ScreenUtil().setWidth(12))),
         // 无限循环
         loop: true,
         // 自动轮播
@@ -283,48 +285,81 @@ class SwiperWidget extends StatelessWidget {
  */
 class CategoryWidget extends StatelessWidget {
   final List<SectionContents> sectionContents;
-
+  final Size iconSize;
   final Function click_action;
+  final MainAxisAlignment space;
 
-  const CategoryWidget({Key key, this.sectionContents, this.click_action})
+  const CategoryWidget(
+      {Key key,
+      this.sectionContents,
+      this.click_action,
+      this.iconSize,
+      this.space = MainAxisAlignment.spaceAround})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      mainAxisAlignment: space,
       children: sectionContents
-          .map((e) => _build_home_category_item(e.title, e.icon, e.targetId))
+          .map((e) => _build_home_category_item(
+              e.title, e.icon, e.targetId, e.orderNum))
           .toList(),
     );
   }
 
   Widget _build_home_category_item(
-      String title, String iconUrl, String jumpUrl) {
-    return Expanded(
-      child: GestureDetector(
-        onTap: () {
-          click_action(jumpUrl);
-        },
-        child: Container(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              CachedNetworkImage(
-                imageUrl: iconUrl,
-                width: ScreenUtil().setWidth(50),
-                fit: BoxFit.cover,
-              ),
-              Container(
-                margin: EdgeInsets.only(top: ScreenUtil().setHeight(8)),
-                child: Text(title),
-              ),
-            ],
-          ),
+      String title, String iconUrl, String jumpUrl, int orderNum) {
+    return GestureDetector(
+      onTap: () {
+        click_action(jumpUrl);
+      },
+      child: Container(
+        // color: Colors.white70,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            CachedNetworkImage(
+              imageUrl: iconUrl,
+              width: iconSize.width,
+              height: iconSize.height,
+              fit: BoxFit.cover,
+            ),
+            Container(
+              margin: EdgeInsets.only(top: ScreenUtil().setHeight(8)),
+              child: Text(title),
+            ),
+          ],
         ),
       ),
     );
+    // return Expanded(
+    //   child: GestureDetector(
+    //     onTap: () {
+    //       click_action(jumpUrl);
+    //     },
+    //     child: Container(
+    //       color: Colors.white70,
+    //       child: Column(
+    //         mainAxisAlignment: MainAxisAlignment.center,
+    //         crossAxisAlignment: CrossAxisAlignment.center,
+    //         children: [
+    //           CachedNetworkImage(
+    //             imageUrl: iconUrl,
+    //             width: iconSize.width,
+    //             height: iconSize.height,
+    //             fit: BoxFit.cover,
+    //           ),
+    //           Container(
+    //             margin: EdgeInsets.only(top: ScreenUtil().setHeight(8)),
+    //             child: Text(title),
+    //           ),
+    //         ],
+    //       ),
+    //     ),
+    //   ),
+    // );
   }
 }
 
@@ -499,63 +534,6 @@ class HorizontalListMovieSectionWidget extends StatelessWidget {
           sectionContents: sectionContents,
         ),
       ],
-    );
-  }
-}
-
-/*
- *图片 + 文字按钮  icon在左 tiitle在右
- */
-class LZClickImageAndTitleBtn extends StatelessWidget {
-  const LZClickImageAndTitleBtn(
-      {Key key,
-      this.image,
-      this.imageSize,
-      this.title,
-      this.padding,
-      this.fontSize,
-      this.textColor,
-      this.onTap,
-      this.mainAxisAlignment})
-      : super(key: key);
-  final Widget image; //image
-  final Size imageSize; //image的宽高
-  final String title; //文字
-  final double padding; //图片和文字之间的间距
-  final double fontSize; //文字的大小
-  final Color textColor; //文字的颜色
-  final onTap; //执行的方法
-  final MainAxisAlignment mainAxisAlignment;
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        alignment: Alignment.center,
-        child: Row(
-          mainAxisAlignment: mainAxisAlignment,
-          // crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Container(
-              width: ScreenUtil().setWidth(imageSize.width),
-              height: ScreenUtil().setHeight(imageSize.height),
-              child: image,
-            ),
-            SizedBox(
-              width: ScreenUtil().setWidth(padding),
-            ),
-            Container(
-              child: Text(
-                title,
-                style: TextStyle(
-                  fontSize: fontSize,
-                  color: textColor,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }
@@ -1684,6 +1662,24 @@ class ScrollDriectionListion extends StatelessWidget {
         _lastMoveY = position;
       },
       child: child,
+    );
+  }
+}
+
+/**
+ * 空数据Widget
+ */
+class EmptyWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      alignment: Alignment.center,
+      height: ScreenUtil().setHeight(500),
+      child: Text(
+        '暂无数据~',
+        style: TextStyle(
+            fontWeight: FontWeight.w600, fontSize: 18, color: Colors.black54),
+      ),
     );
   }
 }

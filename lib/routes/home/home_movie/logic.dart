@@ -13,13 +13,13 @@ class HomeMovieLogic extends GetxController {
   int course_index = 0;
 
   //获取用户项目列表
-  Future<void> getMovieInfo({refresh = true}) async {
+  Future<void> getMovieInfo({refresh = true, page_key}) async {
     _page_number = refresh ? 1 : _page_number + 1;
     //换一批
     course_index = refresh ? 0 : course_index;
 
     var r = await NetTools.dio.get<String>(
-      "v3plus/index/channel?pageNum=${_page_number}&position=CHANNEL_INDEX",
+      "v3plus/index/channel?pageNum=${_page_number}&position=CHANNEL_${page_key}",
     );
     //缓存
     Global.netCache.cache.clear();

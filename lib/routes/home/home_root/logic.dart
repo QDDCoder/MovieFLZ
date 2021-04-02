@@ -30,7 +30,7 @@ class HomeLogic extends GetxController {
               id: 1,
               content: '',
               enabled: '1',
-              key: '0',
+              key: 'INDEX',
               seq: 0));
     });
     //json 转 Map 转 更新

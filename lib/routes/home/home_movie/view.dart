@@ -9,6 +9,10 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'logic.dart';
 
 class HomeMoviePage extends StatefulWidget {
+  final String page_key;
+
+  const HomeMoviePage({Key key, this.page_key}) : super(key: key);
+
   @override
   _HomeMoviePageState createState() => _HomeMoviePageState();
 }
@@ -25,14 +29,21 @@ class _HomeMoviePageState extends State<HomeMoviePage>
       RefreshController(initialRefresh: false);
 
   void _onRefresh() async {
-    await logic.getMovieInfo().then((value) {
+    await logic.getMovieInfo(page_key: widget.page_key).then((value) {
       _refreshController.refreshCompleted();
     });
   }
 
   void _onLoading() async {
-    await logic.getMovieInfo(refresh: false).then((value) {
-      _refreshController.loadComplete();
+    await logic
+        .getMovieInfo(refresh: false, page_key: widget.page_key)
+        .then((value) {
+      if (logic.homeMovieInfo.value.isEnd) {
+        //没有更多数据了
+        _refreshController.loadNoData();
+      } else {
+        _refreshController.loadComplete();
+      }
     });
   }
 
@@ -40,7 +51,7 @@ class _HomeMoviePageState extends State<HomeMoviePage>
   void initState() {
     // TODO: implement initState
     print("页面返回调用了吗");
-    logic.getMovieInfo();
+    logic.getMovieInfo(page_key: widget.page_key);
     super.initState();
   }
 
@@ -106,6 +117,7 @@ class _HomeMoviePageState extends State<HomeMoviePage>
     return logic.homeMovieInfo.value.bannerTop == null
         ? Container()
         : SwiperWidget(
+            alignment: Alignment(0.86, 0.6),
             images: logic.homeMovieInfo.value.bannerTop
                 .map((e) => e.imgUrl)
                 .toList(),
@@ -155,6 +167,7 @@ class _HomeMoviePageState extends State<HomeMoviePage>
           color: Colors.white),
       //category的模块儿
       child: CategoryWidget(
+        iconSize: Size(ScreenUtil().setWidth(50), ScreenUtil().setWidth(50)),
         click_action: (jumpAction) {
           var jumpUrl =
               jumpAction.toString().replaceAll('rrspjump://', '/home/');

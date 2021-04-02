@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:movie_flz/routes/home/home_film/view.dart';
 
 import '../home_movie/view.dart';
 import 'logic.dart';
@@ -114,7 +115,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       child: TabBarView(
         controller: tabController,
         children: logic.topCategory.value.filmTelevsionList.map((e) {
-          return HomeMoviePage();
+          if (e.key == "INDEX") {
+            return HomeMoviePage(
+              page_key: e.key,
+            );
+          } else {
+            return HomeFilmPage(
+              page_key: e.key,
+            );
+          }
         }).toList(),
       ),
     );
