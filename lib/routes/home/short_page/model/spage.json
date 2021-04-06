@@ -1,0 +1,166 @@
+{
+  "requestId": "dfd42282fa664fdbb03c0d53547386b8",
+  "code": "0000",
+  "msg": "Success",
+  "recordsTotal": null,
+  "data": {
+    "shortVideo": [{
+      "contentType": "VIDEO",
+      "content": {
+        "id": 1922700,
+        "cover": "https://img.rr.tv/ugc/20190228/o_1551343622114.png",
+        "title": "摆脱电子诱惑的四条建议",
+        "videoDurationStr": "05:18",
+        "recomTraceId": null,
+        "recomTraceInfo": null,
+        "srcType": "1",
+        "sequence": 1,
+        "createTime": 1617353715000
+      }
+    }, {
+      "contentType": "VIDEO",
+      "content": {
+        "id": 1865836,
+        "cover": "http://img.rr.tv/videoCover/20190218/o_1550455865240.jpg",
+        "title": "权力的游戏里的詹姆·兰尼斯特居然与SKAM里Noora同框过",
+        "videoDurationStr": "04:39",
+        "recomTraceId": null,
+        "recomTraceInfo": null,
+        "srcType": "1",
+        "sequence": 1,
+        "createTime": 1617353625000
+      }
+    }, {
+      "contentType": "VIDEO",
+      "content": {
+        "id": 1746822,
+        "cover": "https://img.rr.tv/ugc/20190112/o_1547297080957.jpg",
+        "title": "你以为挑战恐辅症是亲子题，其实是送命题！",
+        "videoDurationStr": "03:58",
+        "recomTraceId": null,
+        "recomTraceInfo": null,
+        "srcType": "1",
+        "sequence": 1,
+        "createTime": 1617353310000
+      }
+    }, {
+      "contentType": "VIDEO",
+      "content": {
+        "id": 1611726,
+        "cover": "http://img.rr.tv/videoCover/20181214/o_1544757280039.png",
+        "title": "【毒液】汤姆哈迪与男二Riz无节操答网友问题",
+        "videoDurationStr": "03:43",
+        "recomTraceId": null,
+        "recomTraceInfo": null,
+        "srcType": "1",
+        "sequence": 1,
+        "createTime": 1617354556000
+      }
+    }, {
+      "contentType": "VIDEO",
+      "content": {
+        "id": 1742803,
+        "cover": "https://img.rr.tv/ugc/20190111/o_1547196678248.jpg",
+        "title": "人生路上难免遇到一些错的人 不要因为离婚而觉得耻辱",
+        "videoDurationStr": "03:39",
+        "recomTraceId": null,
+        "recomTraceInfo": null,
+        "srcType": "1",
+        "sequence": 1,
+        "createTime": 1617353274000
+      }
+    }, {
+      "contentType": "VIDEO",
+      "content": {
+        "id": 1760185,
+        "cover": "https://img.rr.tv/ugc/20190116/o_1547623996906.png",
+        "title": "心理学科普：为何理解焦虑症如此重要？",
+        "videoDurationStr": "09:34",
+        "recomTraceId": null,
+        "recomTraceInfo": null,
+        "srcType": "1",
+        "sequence": 1,
+        "createTime": 1617353260000
+      }
+    }, {
+      "contentType": "VIDEO",
+      "content": {
+        "id": 1920211,
+        "cover": "https://img.rr.tv/ugc/20190228/o_1551305813039.jpg",
+        "title": "【盘点】<哈利波特>中赫敏与罗恩难忘的十大时刻",
+        "videoDurationStr": "09:13",
+        "recomTraceId": null,
+        "recomTraceInfo": null,
+        "srcType": "1",
+        "sequence": 1,
+        "createTime": 1617353903000
+      }
+    }, {
+      "contentType": "VIDEO",
+      "content": {
+        "id": 1920314,
+        "cover": "https://img.rr.tv/ugc/20190228/o_1551314659651.png",
+        "title": "喜剧片《分手专家》，小伙2年拆散1000对情侣，有深度",
+        "videoDurationStr": "04:12",
+        "recomTraceId": null,
+        "recomTraceInfo": null,
+        "srcType": "1",
+        "sequence": 1,
+        "createTime": 1617353884000
+      }
+    }, {
+      "contentType": "VIDEO",
+      "content": {
+        "id": 1920916,
+        "cover": "https://img.rr.tv/ugc/20190228/o_1551322031250.png",
+        "title": "多影视作品混剪《波西米亚狂想曲》",
+        "videoDurationStr": "05:55",
+        "recomTraceId": null,
+        "recomTraceInfo": null,
+        "srcType": "1",
+        "sequence": 1,
+        "createTime": 1617353819000
+      }
+    }, {
+      "contentType": "VIDEO",
+      "content": {
+        "id": 1921030,
+        "cover": "https://img.rr.tv/ugc/20190228/o_1551323688224.png",
+        "title": "一部无法逾越的国产科幻片，当年他们可没有特效的",
+        "videoDurationStr": "02:44",
+        "recomTraceId": null,
+        "recomTraceInfo": null,
+        "srcType": "1",
+        "sequence": 1,
+        "createTime": 1617353797000
+      }
+    }, {
+      "contentType": "VIDEO",
+      "content": {
+        "id": 1921039,
+        "cover": "http://img.rr.tv/videoCover/20190228/o_1551329313387.jpg",
+        "title": "五分钟解说奥利维娅·科尔曼封后之作《宠儿》",
+        "videoDurationStr": "05:35",
+        "recomTraceId": null,
+        "recomTraceInfo": null,
+        "srcType": "1",
+        "sequence": 1,
+        "createTime": 1617353778000
+      }
+    }, {
+      "contentType": "VIDEO",
+      "content": {
+        "id": 1921088,
+        "cover": "https://img.rr.tv/ugc/20190228/o_1551324847645.jpg",
+        "title": "诚实预告片- 实力吐槽《一个明星的诞生》",
+        "videoDurationStr": "05:32",
+        "recomTraceId": null,
+        "recomTraceInfo": null,
+        "srcType": "1",
+        "sequence": 1,
+        "createTime": 1617353762000
+      }
+    }],
+    "banner": []
+  }
+}

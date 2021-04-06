@@ -31,7 +31,7 @@ import 'package:movie_flz/routes/home/movie_category/view.dart';
 import 'package:movie_flz/routes/home/schedule_list/view.dart';
 import 'package:movie_flz/routes/home/season_rank/view.dart';
 import 'package:movie_flz/routes/home/top_movies_list_view_widget/view.dart';
-import 'package:movie_flz/routes/look/view.dart';
+import 'package:movie_flz/routes/look/root/view.dart';
 import 'package:movie_flz/routes/user_center/setting/view.dart';
 import 'package:movie_flz/routes/user_center/view.dart';
 

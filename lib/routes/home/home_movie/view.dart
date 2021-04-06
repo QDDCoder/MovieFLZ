@@ -23,7 +23,7 @@ class _HomeMoviePageState extends State<HomeMoviePage>
 
   @override
   // TODO: implement wantKeepAlive
-  bool get wantKeepAlive => false;
+  bool get wantKeepAlive => true;
 
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
@@ -52,6 +52,7 @@ class _HomeMoviePageState extends State<HomeMoviePage>
     // TODO: implement initState
     print("页面返回调用了吗");
     logic.getMovieInfo(page_key: widget.page_key);
+    logic.test_get_video();
     super.initState();
   }
 

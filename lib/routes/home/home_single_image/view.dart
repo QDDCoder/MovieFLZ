@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -67,8 +68,9 @@ class _HomeSingleImagePageState extends State<HomeSingleImagePage> {
           childWidget: ListView.builder(
             itemCount: logic.homeSingleModel.value.sections.length,
             itemBuilder: (context, index) {
-              return Image.network(logic.homeSingleModel.value.sections[index]
-                  .content.first.coverUrl);
+              return CachedNetworkImage(
+                  imageUrl: logic.homeSingleModel.value.sections[index].content
+                      .first.coverUrl);
             },
           ),
         ),

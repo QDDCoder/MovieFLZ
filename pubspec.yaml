@@ -37,6 +37,9 @@ dependencies:
   pull_to_refresh: ^1.6.4
   flutter_star:
   cached_network_image: ^2.5.1
+  # 视频播放器
+  chewie:
+  video_player:
 
 dev_dependencies:
   flutter_test:

@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/screen_util.dart';
@@ -439,8 +440,8 @@ class _ScheduleListPageState extends State<ScheduleListPage> {
             child: Stack(
               children: [
                 Positioned.fill(
-                  child: Image.network(
-                    model.verticalUrl,
+                  child: CachedNetworkImage(
+                    imageUrl: model.verticalUrl,
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -486,8 +487,8 @@ class _ScheduleListPageState extends State<ScheduleListPage> {
           child: SizedBox(
             width: ScreenUtil().setWidth(140),
             height: double.infinity,
-            child: Image.network(
-              model.verticalUrl,
+            child: CachedNetworkImage(
+              imageUrl: model.verticalUrl,
               fit: BoxFit.scaleDown,
             ),
           ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:movie_flz/routes/home/home_film/view.dart';
+import 'package:movie_flz/routes/home/short_page/view.dart';
 
 import '../home_movie/view.dart';
 import 'logic.dart';
@@ -11,7 +12,8 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
+class _HomePageState extends State<HomePage>
+    with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   final HomeLogic logic = Get.put(HomeLogic());
 
   TabController tabController;
@@ -22,6 +24,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         length: logic.topCategory.value.filmTelevsionList.length, vsync: this);
     //发起网络请求顶部的分类数据
     getNetInfo();
+
     super.initState();
   }
 
@@ -119,6 +122,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             return HomeMoviePage(
               page_key: e.key,
             );
+          } else if (e.key == 'SHORTVIDEO') {
+            return ShortPagePage();
           } else {
             return HomeFilmPage(
               page_key: e.key,
@@ -286,4 +291,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       ],
     );
   }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }

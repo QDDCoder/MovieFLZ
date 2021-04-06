@@ -40,6 +40,7 @@ import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:movie_flz/routes/home/gess_you_like/model/GessYouLikeModel.dart';
 import 'package:movie_flz/routes/home/home_list_card_view/model/ListCardViewModel.dart';
 import 'package:movie_flz/routes/home/home_movie/Model/HomeMovieModel.dart';
+import 'package:movie_flz/routes/home/short_page/model/ShortPageModel.dart';
 import 'package:movie_flz/tools/Button+Extension.dart';
 import 'package:movie_flz/tools/ColorTools.dart';
 import 'package:movie_flz/tools/StringTools.dart';
@@ -1056,8 +1057,8 @@ class GessYouLikeListItemWidget extends StatelessWidget {
   _buld_lift_image_widget() {
     return ClipRRect(
       borderRadius: BorderRadius.circular(ScreenUtil().setWidth(14)),
-      child: Image.network(
-        coverUrl,
+      child: CachedNetworkImage(
+        imageUrl: coverUrl,
         fit: BoxFit.cover,
         height: ScreenUtil().setHeight(158),
         width: ScreenUtil().setWidth(140),
@@ -1179,23 +1180,6 @@ class GessYouLikeListItemWidget extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  String _changeStringList(List<String> list) {
-    String tempString = '';
-    list.forEach((element) {
-      tempString += element;
-    });
-    return tempString;
-  }
-
-  String _changeType(List<String> list) {
-    String tempString = '';
-    list.forEach((element) {
-      tempString += ' ${element}';
-    });
-    tempString.replaceFirst(' ', '');
-    return tempString;
   }
 }
 
@@ -1414,8 +1398,8 @@ class HomeListCardMoreItemWidget extends StatelessWidget {
           height: ScreenUtil().setHeight(224),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(ScreenUtil().setWidth(20)),
-            child: Image.network(
-              iconUrl,
+            child: CachedNetworkImage(
+              imageUrl: iconUrl,
               fit: BoxFit.cover,
             ),
           ),
@@ -1485,8 +1469,8 @@ class MoreMoviesListViewTopWidget extends StatelessWidget {
   _build_bg_widget() {
     return Positioned.fill(
       child: coverUrl != ''
-          ? Image.network(
-              coverUrl,
+          ? CachedNetworkImage(
+              imageUrl: coverUrl,
               fit: BoxFit.cover,
             )
           : Container(),
@@ -1683,3 +1667,345 @@ class EmptyWidget extends StatelessWidget {
     );
   }
 }
+
+/**
+ * 普通的分类数据
+ */
+class NormalCategoryWidget extends StatelessWidget {
+  final List<SectionContents> sections;
+
+  const NormalCategoryWidget({Key key, this.sections}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.only(
+          top: ScreenUtil().setHeight(40),
+          left: ScreenUtil().setWidth(30),
+          right: ScreenUtil().setWidth(30)),
+      height: ScreenUtil().setHeight(156),
+      //category的模块儿
+      child: CategoryWidget(
+        space: MainAxisAlignment.spaceBetween,
+        iconSize: Size(ScreenUtil().setWidth(90), ScreenUtil().setWidth(90)),
+        click_action: (jumpAction) {
+          // var jumpUrl =
+          // jumpAction.toString().replaceAll('rrspjump://', '/home/');
+          // if (jumpUrl.contains('seasonRank')) {
+          //   Get.toNamed(jumpUrl, arguments: {'sectionId': 3177});
+          // } else {
+          //   Get.toNamed(jumpUrl);
+          // }
+        },
+        sectionContents: sections ?? [],
+      ),
+    );
+  }
+}
+
+/**
+ * 专属片单
+ */
+class FilmListSHEETWidget extends StatelessWidget {
+  final Sections sections;
+  final Function click_more;
+  final Function click_item;
+
+  const FilmListSHEETWidget(
+      {Key key, this.sections, this.click_more, this.click_item})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        //顶部的信息条
+        MovieSectionHead(
+          leftInfo: sections.name,
+          isMore: true,
+          rightInfo: sections.moreText,
+          clickAction: click_more,
+        ),
+        _build_exclusive_film_list(sections.sectionContents),
+      ],
+    );
+  }
+
+  /**
+   * 专属片单
+   */
+  _build_exclusive_film_list(List<SectionContents> list) {
+    return Padding(
+      padding: EdgeInsets.only(
+          left: ScreenUtil().setWidth(20), right: ScreenUtil().setWidth(20)),
+      child: GridView.builder(
+          //屏蔽无限高度
+          shrinkWrap: true,
+          physics: NeverScrollableScrollPhysics(), //禁用滑动事件
+          itemCount: list.length,
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              //数量
+              crossAxisCount: 2,
+              //横向间隔
+              crossAxisSpacing: ScreenUtil().setWidth(10),
+              //纵向间隔
+              mainAxisSpacing: ScreenUtil().setWidth(14),
+              //宽高比
+              childAspectRatio: 0.98),
+          itemBuilder: (context, index) {
+            return _build_exclusive_film_list_item_card(list[index]);
+          }),
+    );
+  }
+
+  //专属片单的itemcard
+  _build_exclusive_film_list_item_card(SectionContents sectionContents) {
+    return GestureDetector(
+      onTap: () {
+        click_item(sectionContents.seriesId);
+      },
+      child: Container(
+        decoration: BoxDecoration(
+            color: hexToColor('#ffffff'),
+            borderRadius: BorderRadius.circular(ScreenUtil().setWidth(14))),
+        child: _build_top_images(sectionContents),
+      ),
+    );
+  }
+
+  _build_top_images(SectionContents sectionContents) {
+    return Container(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Padding(
+            padding: EdgeInsets.only(
+              top: ScreenUtil().setHeight(20),
+            ),
+            child: Stack(
+              alignment: Alignment.bottomLeft,
+              children: [
+                _build_left_image_widget(0.8, ScreenUtil().setWidth(178),
+                    sectionContents.series[2].coverUrl),
+                _build_left_image_widget(0.9, ScreenUtil().setWidth(86),
+                    sectionContents.series[1].coverUrl),
+                _build_left_image_widget(1.0, ScreenUtil().setWidth(0),
+                    sectionContents.series[0].coverUrl),
+              ],
+            ),
+          ),
+          //上面的title
+          Container(
+            margin: EdgeInsets.only(
+              left: ScreenUtil().setWidth(24),
+              top: ScreenUtil().setHeight(10),
+            ),
+            alignment: Alignment.centerLeft,
+            child: Text(
+              sectionContents.title,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w500),
+            ),
+          ),
+          //总部数
+          Container(
+            margin: EdgeInsets.only(
+              left: ScreenUtil().setWidth(24),
+              top: ScreenUtil().setHeight(3),
+            ),
+            alignment: Alignment.centerLeft,
+            child: Text(
+              '共${sectionContents.relevanceCount}部',
+              style: TextStyle(color: Colors.black45, fontSize: 13),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  //层叠图片
+  _build_left_image_widget(double scale, double ml, String coverImag) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(10),
+      child: Container(
+        margin: EdgeInsets.only(
+          left: ml,
+        ),
+        width: ScreenUtil().setWidth(150 * scale),
+        height: ScreenUtil().setHeight(170 * scale),
+        child: Stack(
+          children: [
+            Positioned.fill(
+              child: CachedNetworkImage(
+                imageUrl: coverImag,
+                fit: BoxFit.cover,
+              ),
+            ),
+            Positioned.fill(
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 1 - scale, sigmaY: 1 - scale),
+                child: Container(
+                  color: Colors.white.withOpacity(0.1),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/**
+ * 电影独家策划
+ */
+class Filme_MULTI_IMAGE_Widget extends StatelessWidget {
+  final Sections sections;
+
+  final Function click_item;
+
+  const Filme_MULTI_IMAGE_Widget({Key key, this.sections, this.click_item})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        //顶部的信息条
+        MovieSectionHead(
+          leftInfo: sections.name,
+          isMore: false,
+          rightInfo: sections.moreText,
+          clickAction: () {},
+        ),
+        _build_hor_list_view(sections.sectionContents),
+      ],
+    );
+  }
+
+  _build_hor_list_view(List<SectionContents> sectionContents) {
+    return Container(
+      height: ScreenUtil().setHeight(220),
+      child: RepaintBoundary(
+        //边距和填充
+        child: ListView.separated(
+          itemCount: sectionContents.length,
+          itemBuilder: (context, index) {
+            return GestureDetector(
+              onTap: () {
+                click_item(sectionContents[index].targetId);
+                // itemClickAction(index);
+              },
+              child: Container(
+                  width: ScreenUtil().setWidth(240),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(
+                      ScreenUtil().setWidth(20),
+                    ),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(
+                      ScreenUtil().setWidth(10),
+                    ),
+                    child: CachedNetworkImage(
+                      imageUrl: sectionContents[index].icon,
+                      fit: BoxFit.cover,
+                    ),
+                  )),
+            );
+          },
+          //头尾间隔
+          padding: EdgeInsets.only(
+              left: ScreenUtil().setWidth(20),
+              right: ScreenUtil().setWidth(20)),
+          scrollDirection: Axis.horizontal,
+          //item 间隔
+          separatorBuilder: (context, index) {
+            return SizedBox(
+              width: ScreenUtil().setWidth(14),
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
+/**
+ * 短视频的GridView
+ */
+class ShortPageGridView extends StatelessWidget {
+
+  final List<ShortVideo> shortVideo;
+
+  const ShortPageGridView({Key key, this.shortVideo}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return GridView.builder(
+      itemCount: shortVideo.length,
+      //屏蔽无限高度
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        //数量
+          crossAxisCount: 2,
+          //横向间隔
+          crossAxisSpacing: ScreenUtil().setWidth(10),
+          //纵向间隔
+          // mainAxisSpacing: ScreenUtil().setWidth(8),
+          //宽高比
+          childAspectRatio: 1.17),
+      itemBuilder: (context, index) {
+        return _build_short_movie_item(shortVideo[index]);
+      },
+    );
+  }
+  _build_short_movie_item(ShortVideo shortVideo) {
+    return Container(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        //图片
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(ScreenUtil().setWidth(10)),
+            child: Container(
+              width: double.infinity,
+              height: ScreenUtil().setHeight(154),
+              child: Stack(
+                children: [
+                  Positioned.fill(
+                    child: Image.network(
+                      shortVideo.content.cover,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  Align(
+                    alignment: Alignment(0.76, 0.9),
+                    child: Text(
+                      shortVideo.content.videoDurationStr,
+                      style:
+                      TextStyle(color: hexToColor('#f4f4f4'), fontSize: 13),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.only(top: ScreenUtil().setHeight(8)),
+            child: Text(
+              shortVideo.content.title,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(fontSize: 15),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+

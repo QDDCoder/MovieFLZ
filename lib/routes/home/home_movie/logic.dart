@@ -38,6 +38,17 @@ class HomeMovieLogic extends GetxController {
     //json 转 Map 转 更新
   }
 
+  //
+  test_get_video() async {
+    var r = await NetTools.dio.get<String>(
+      //106465 - 3119053
+      //3757837
+      //3800761
+      "https://api.rr.tv/watch/get_video_info?quality=super&subtitle=3&videoId=151988",
+    );
+    print('视频信息====>>>${r.data}');
+  }
+
   //换一批
   Future<void> refushPeoplesLook({int sectionId}) async {
     course_index++;
