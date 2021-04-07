@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:movie_flz/config/RouteConfig.dart';
 import 'package:movie_flz/routes/home/home_film/view.dart';
 import 'package:movie_flz/routes/home/short_page/view.dart';
 
@@ -22,6 +23,7 @@ class _HomePageState extends State<HomePage>
     // TODO: implement initState
     tabController = TabController(
         length: logic.topCategory.value.filmTelevsionList.length, vsync: this);
+
     //发起网络请求顶部的分类数据
     getNetInfo();
 
@@ -252,16 +254,21 @@ class _HomePageState extends State<HomePage>
    */
   buildCenterSS() {
     return Expanded(
-      child: Container(
-        alignment: Alignment.center,
-        height: ScreenUtil().setHeight(44),
-        decoration: BoxDecoration(
-            color: Colors.black38.withOpacity(0.2),
-            borderRadius: BorderRadius.circular(ScreenUtil().setWidth(60))),
-        margin: EdgeInsets.only(
-          left: 10,
+      child: GestureDetector(
+        onTap: () {
+          Get.toNamed(RouteConfig.search_page);
+        },
+        child: Container(
+          alignment: Alignment.center,
+          height: ScreenUtil().setHeight(44),
+          decoration: BoxDecoration(
+              color: Colors.black38.withOpacity(0.2),
+              borderRadius: BorderRadius.circular(ScreenUtil().setWidth(60))),
+          margin: EdgeInsets.only(
+            left: 10,
+          ),
+          child: _build_search_info(),
         ),
-        child: _build_search_info(),
       ),
     );
   }

@@ -24,6 +24,8 @@ class MyApp extends StatelessWidget {
           title: 'home'.tr,
           fallbackLocale: Locale('en_zh', 'en_US'),
           theme: ThemeData(
+            highlightColor: Colors.transparent,
+            splashColor: Colors.transparent,
             primarySwatch: Colors.blue,
           ),
           // home: MainPage(),

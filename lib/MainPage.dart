@@ -39,11 +39,15 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   final HomeLogic logic = Get.put(HomeLogic());
+
   //页面信息
   final List<Widget> pages = List<Widget>();
+
   PageController pageController;
   //当前的页面
   int _current_select = 0;
+
+  ValueNotifierData vd = ValueNotifierData(false);
 
   @override
   void initState() {
@@ -57,7 +61,9 @@ class _MainPageState extends State<MainPage> {
           if (element.index == 1) {
             pages.add(HomePage());
           } else if (element.index == 2) {
-            pages.add(LookPage());
+            pages.add(LookPage(
+              data: vd,
+            ));
           } else if (element.index == 3) {
             pages.add(VipPagePage());
           } else if (element.index == 4) {
@@ -95,7 +101,7 @@ class _MainPageState extends State<MainPage> {
           children: logic.configModel.value.homeBarPage.map((e) {
             return GestureDetector(
               onTap: () {
-                bottomClick(e.index - 1);
+                bottomClick(e.index - 1, context);
               },
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -128,12 +134,26 @@ class _MainPageState extends State<MainPage> {
   }
 
   //底部按钮的点击
-  bottomClick(int index) {
+  bottomClick(int index, context) {
     setState(() {
       _current_select = index;
       pageController.jumpToPage(index);
+      if (index == 1) {
+        //看看的处理
+        vd.value = true;
+      } else {
+        vd.value = false;
+      }
     });
   }
 }
 
-class MyBottomAppBar extends BottomAppBar {}
+/**
+ * 看看页面的播放或者暂停通知
+ */
+class PlayOrPauseNotification extends Notification {
+  final bool isPlaying;
+  PlayOrPauseNotification({
+    @required this.isPlaying,
+  });
+}

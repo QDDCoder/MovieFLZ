@@ -1,18 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:movie_flz/tools/ColorTools.dart';
 import 'package:video_player/video_player.dart';
 
 import 'logic.dart';
 
+class ValueNotifierData extends ValueNotifier<bool> {
+  ValueNotifierData(value) : super(value);
+}
+
 class LookPage extends StatefulWidget {
+  final ValueNotifierData data;
+  const LookPage({Key key, this.data}) : super(key: key);
+
   @override
   _LookPageState createState() => _LookPageState();
 }
 
-class _LookPageState extends State<LookPage> {
+class _LookPageState extends State<LookPage>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
+
   final LookLogic logic = Get.put(LookLogic());
+
   PageController _pageController = PageController();
+
   @override
   void initState() {
     // TODO: implement initState
@@ -22,6 +37,7 @@ class _LookPageState extends State<LookPage> {
         logic.movieDatasList();
       }
     });
+
     super.initState();
   }
 
@@ -29,7 +45,7 @@ class _LookPageState extends State<LookPage> {
   Widget build(BuildContext context) {
     return Obx(() {
       return Scaffold(
-        backgroundColor: Colors.black87,
+        backgroundColor: hexToColor('#171115'),
         body: PageView.builder(
           controller: _pageController,
           itemCount: logic.movieDatas.value.data.length,
@@ -37,6 +53,7 @@ class _LookPageState extends State<LookPage> {
             return LookMoviePlayerPage(
               videoUrl: logic.movieDatas.value.data[index].playLink,
               previewImageUrl: logic.movieDatas.value.data[index].cover,
+              data: widget.data,
             );
           },
           scrollDirection: Axis.vertical,
@@ -50,7 +67,10 @@ class LookMoviePlayerPage extends StatefulWidget {
   final String videoUrl;
   final String previewImageUrl; //预览图片的地址
 
-  const LookMoviePlayerPage({Key key, this.videoUrl, this.previewImageUrl})
+  final ValueNotifierData data;
+
+  const LookMoviePlayerPage(
+      {Key key, this.videoUrl, this.previewImageUrl, this.data})
       : super(key: key);
 
   @override
@@ -61,19 +81,33 @@ class _LookMoviePlayerPageState extends State<LookMoviePlayerPage> {
   VideoPlayerController _controller;
   bool videoPrepared = false; //视频是否初始化
   double aspectRatio = 1;
-  Future _initializeVideoPlayerFuture;
   @override
   void initState() {
-    print("创建了啊哈====>>>");
     // TODO: implement initState
     _controller = VideoPlayerController.network(//定义连接器内容，这里初学者可能有点难懂下面详细讲
         widget.videoUrl)
       ..initialize().then((a) {
-        _controller.play();
+        if (widget.data.value) {
+          _controller.play();
+        } else {
+          _controller.pause();
+        }
         videoPrepared = true;
         setState(() {});
       });
+
+    widget.data.addListener(_handleValueChanged);
+
     super.initState();
+  }
+
+  void _handleValueChanged() {
+    if (widget.data.value) {
+      _controller.play();
+    } else {
+      _controller.pause();
+    }
+    setState(() {});
   }
 
   @override
@@ -108,12 +142,8 @@ class _LookMoviePlayerPageState extends State<LookMoviePlayerPage> {
             onTap: () {
               if (_controller.value.isPlaying) {
                 _controller.pause();
-                // _hideActionButton = false;
-                // setState(() {});
               } else {
                 _controller.play();
-                // _hideActionButton = true;
-                // setState(() {});
               }
             },
           ),
@@ -132,6 +162,5 @@ class _LookMoviePlayerPageState extends State<LookMoviePlayerPage> {
         child: Image.network(widget.previewImageUrl),
       ),
     );
-
   }
 }
