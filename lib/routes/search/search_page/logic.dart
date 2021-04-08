@@ -6,6 +6,7 @@ import 'package:movie_flz/config/NetTools.dart';
 import 'package:movie_flz/tools/LZStorageUtils.dart';
 
 import 'model/MainSearchModel.dart';
+import 'model/SearchKKModel.dart';
 
 class SearchPageLogic extends GetxController {
   final historyList = Map<String, dynamic>().obs;
@@ -23,6 +24,8 @@ class SearchPageLogic extends GetxController {
     var tempModel = await LZStorageUtils.getModelWithKey('historyList');
     if (tempModel != null) {
       historyList[historyListkey] = tempModel;
+    } else {
+      historyList[historyListkey] = null;
     }
   }
 
@@ -39,6 +42,14 @@ class SearchPageLogic extends GetxController {
       tempModel[historyListInkey] = temp;
       await LZStorageUtils.saveModel('historyList', tempModel);
     }
+    getSearchList();
+  }
+
+  /**
+   * 清理搜索历史
+   */
+  Future<void> clearAllHistory() async {
+    LZStorageUtils.saveModel('historyList', null);
     getSearchList();
   }
 
@@ -67,8 +78,42 @@ class SearchPageLogic extends GetxController {
           tempModle.data.removeAt(element);
         });
       }
+
+      //处理数据Label
+      tempModle.data.forEach((element) {
+        element.searchRecommendDtos.forEach((elementIn) {
+          if (elementIn.label == 'hot') {
+            elementIn.label = '热';
+          } else if (elementIn.label == 'new') {
+            elementIn.label = '新';
+          } else if (elementIn.label == 'recommend') {
+            elementIn.label = '荐';
+          }
+        });
+      });
       //更新数据
       val.data.addAll(tempModle.data);
+    });
+  }
+
+  //输入搜索的关键字
+  final recommandKey = ''.obs;
+  updateRecommandKey({key}) {
+    recommandKey.value = key;
+    getRecommandKeyWordModel(key: key);
+  }
+
+  //底部的推荐的关键字
+  final recommandKeyModel = SearchKKModel().obs;
+  Future<void> getRecommandKeyWordModel({key}) async {
+    //https://api.rr.tv/search/lenovo?keywords=%E6%88%91%E4%BB%AC
+    var r = await NetTools.dio.get<String>(
+      "search/lenovo?keywords=${key}",
+    );
+
+    var tempModle = SearchKKModel.fromJson(convert.jsonDecode(r.data));
+    recommandKeyModel.update((val) {
+      val.data = tempModle.data;
     });
   }
 }
