@@ -10,25 +10,7 @@
 ##### 效果图:
 
 <figure class="third">
-    <img src='https://gitee.com/laozhan_qiqi/movie-flz/raw/master/images/a.png' width=24%>
-    <img src='https://gitee.com/laozhan_qiqi/movie-flz/raw/master/images/b.png' width=24%>
-    <img src='https://gitee.com/laozhan_qiqi/movie-flz/raw/master/images/c.png' width=24%>
-    <img src='https://gitee.com/laozhan_qiqi/movie-flz/raw/master/images/d.png' width=24%>
-    <img src='https://gitee.com/laozhan_qiqi/movie-flz/raw/master/images/e.png' width=24%>
-    <img src='https://gitee.com/laozhan_qiqi/movie-flz/raw/master/images/f.png' width=24%>
-    <img src='https://gitee.com/laozhan_qiqi/movie-flz/raw/master/images/a1.png' width=24%>
-    <img src='https://gitee.com/laozhan_qiqi/movie-flz/raw/master/images/a2.png' width=24%>
-    <img src='https://gitee.com/laozhan_qiqi/movie-flz/raw/master/images/a3.png' width=24%>
-    <img src='https://gitee.com/laozhan_qiqi/movie-flz/raw/master/images/a4.png' width=24%>
-    <img src='https://gitee.com/laozhan_qiqi/movie-flz/raw/master/images/a5.png' width=24%>
-    <img src='https://gitee.com/laozhan_qiqi/movie-flz/raw/master/images/a6.png' width=24%>
-    <img src='https://gitee.com/laozhan_qiqi/movie-flz/raw/master/images/a7.png' width=24%>
-    <img src='https://gitee.com/laozhan_qiqi/movie-flz/raw/master/images/a8.png' width=24%>
-    <img src='https://gitee.com/laozhan_qiqi/movie-flz/raw/master/images/a9.png' width=24%>
-    <img src='https://gitee.com/laozhan_qiqi/movie-flz/raw/master/images/a10.png' width=24%>
-    <img src='https://gitee.com/laozhan_qiqi/movie-flz/raw/master/images/b1.png' width=24%>
-    <img src='https://gitee.com/laozhan_qiqi/movie-flz/raw/master/images/b2.png' width=24%>
-    <img src='https://gitee.com/laozhan_qiqi/movie-flz/raw/master/images/b3.png' width=24%>
+    <img src='https://gitee.com/laozhan_qiqi/movie-flz/raw/master/images/a.png' width=24%><img src='https://gitee.com/laozhan_qiqi/movie-flz/raw/master/images/b.png' width=24%><img src='https://gitee.com/laozhan_qiqi/movie-flz/raw/master/images/c.png' width=24%><img src='https://gitee.com/laozhan_qiqi/movie-flz/raw/master/images/d.png' width=24%><img src='https://gitee.com/laozhan_qiqi/movie-flz/raw/master/images/e.png' width=24%><img src='https://gitee.com/laozhan_qiqi/movie-flz/raw/master/images/f.png' width=24%><img src='https://gitee.com/laozhan_qiqi/movie-flz/raw/master/images/a1.png' width=24%><img src='https://gitee.com/laozhan_qiqi/movie-flz/raw/master/images/a2.png' width=24%><img src='https://gitee.com/laozhan_qiqi/movie-flz/raw/master/images/a3.png' width=24%><img src='https://gitee.com/laozhan_qiqi/movie-flz/raw/master/images/a4.png' width=24%><img src='https://gitee.com/laozhan_qiqi/movie-flz/raw/master/images/a5.png' width=24%><img src='https://gitee.com/laozhan_qiqi/movie-flz/raw/master/images/a6.png' width=24%><img src='https://gitee.com/laozhan_qiqi/movie-flz/raw/master/images/a7.png' width=24%><img src='https://gitee.com/laozhan_qiqi/movie-flz/raw/master/images/a8.png' width=24%><img src='https://gitee.com/laozhan_qiqi/movie-flz/raw/master/images/a9.png' width=24%><img src='https://gitee.com/laozhan_qiqi/movie-flz/raw/master/images/a10.png' width=24%><img src='https://gitee.com/laozhan_qiqi/movie-flz/raw/master/images/b1.png' width=24%><img src='https://gitee.com/laozhan_qiqi/movie-flz/raw/master/images/b2.png' width=24%><img src='https://gitee.com/laozhan_qiqi/movie-flz/raw/master/images/b3.png' width=24%>
 </figure>
 
 
