@@ -128,12 +128,7 @@ class _LookMoviePlayerPageState extends State<LookMoviePlayerPage> {
             child: Stack(
               children: <Widget>[
                 _controller.value.isInitialized
-                    ? Center(
-                        child: AspectRatio(
-                          aspectRatio: _controller.value.aspectRatio,
-                          child: VideoPlayer(_controller),
-                        ),
-                      )
+                    ? _build_video_body()
                     : Center(
                         child: CircularProgressIndicator(),
                       ),
@@ -160,6 +155,28 @@ class _LookMoviePlayerPageState extends State<LookMoviePlayerPage> {
         width: ScreenUtil().screenWidth,
         height: ScreenUtil().screenHeight,
         child: Image.network(widget.previewImageUrl),
+      ),
+    );
+  }
+
+  //中间的视频数据
+  Widget _build_video_body() {
+    return Container(
+      child: Stack(
+        children: [
+          //视频播放的
+          Center(
+            child: AspectRatio(
+              aspectRatio: _controller.value.aspectRatio,
+              child: VideoPlayer(_controller),
+            ),
+          ),
+          //title
+          Align(
+            alignment: Alignment(-0.3, 0.7),
+            child: Text('啊哈哈哈'),
+          ),
+        ],
       ),
     );
   }
