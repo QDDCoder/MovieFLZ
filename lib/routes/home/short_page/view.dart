@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/screen_util.dart';
 import 'package:get/get.dart';
+import 'package:movie_flz/config/RouteConfig.dart';
 import 'package:movie_flz/routes/home/home_root/views/HomeMovieView.dart';
 import 'package:movie_flz/tools/ColorTools.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -84,47 +85,59 @@ class _ShortPagePageState extends State<ShortPagePage>
   }
 
   _build_short_movie_item(ShortVideo shortVideo) {
-    return Container(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        //图片
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(ScreenUtil().setWidth(10)),
-            child: Container(
-              width: double.infinity,
-              height: ScreenUtil().setHeight(154),
-              child: Stack(
-                children: [
-                  Positioned.fill(
-                    child: Image.network(
-                      shortVideo.content.cover,
-                      fit: BoxFit.cover,
+    return GestureDetector(
+      onTap: () {
+        _jump_detaill(shortVideo.content.id);
+      },
+      child: Container(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          //图片
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(ScreenUtil().setWidth(10)),
+              child: Container(
+                width: double.infinity,
+                height: ScreenUtil().setHeight(154),
+                child: Stack(
+                  children: [
+                    Positioned.fill(
+                      child: Image.network(
+                        shortVideo.content.cover,
+                        fit: BoxFit.cover,
+                      ),
                     ),
-                  ),
-                  Align(
-                    alignment: Alignment(0.76, 0.9),
-                    child: Text(
-                      shortVideo.content.videoDurationStr,
-                      style:
-                          TextStyle(color: hexToColor('#f4f4f4'), fontSize: 13),
+                    Align(
+                      alignment: Alignment(0.76, 0.9),
+                      child: Text(
+                        shortVideo.content.videoDurationStr,
+                        style: TextStyle(
+                            color: hexToColor('#f4f4f4'), fontSize: 13),
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-          Padding(
-            padding: EdgeInsets.only(top: ScreenUtil().setHeight(8)),
-            child: Text(
-              shortVideo.content.title,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(fontSize: 15),
+            Padding(
+              padding: EdgeInsets.only(top: ScreenUtil().setHeight(8)),
+              child: Text(
+                shortVideo.content.title,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(fontSize: 15),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
+  }
+
+  /**
+   * 跳转到详情页
+   */
+  void _jump_detaill(int id) {
+    Get.toNamed(RouteConfig.short_movie_play, arguments: {'movieId': id});
   }
 }

@@ -28,24 +28,23 @@ import 'dart:convert' as convert;
 
 // aes 加密存储
 import 'package:flustars/flustars.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'LZEncryptUtils.dart';
 
 class LZStorageUtils {
   //存 String
   static Future<bool> saveString(String key, String value) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await SpUtil.getInstance();
     key = LZEncryptUtils.aesEncrypt(key);
     value = LZEncryptUtils.aesEncrypt(value);
-    return prefs.setString(key, value);
+    return SpUtil.putString(key, value);
   }
 
   //取 String
   static Future<String> getStringWithKey(String key) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await SpUtil.getInstance();
     key = LZEncryptUtils.aesEncrypt(key);
-    var enValue = await prefs.getString(key);
+    var enValue = await SpUtil.getString(key);
     if (enValue == null) {
       return null;
     } else {
@@ -104,14 +103,14 @@ class LZStorageUtils {
   //取 Model
   static Future<Map> getModelWithKey(String key) async {
     var jsonString = await getStringWithKey(key);
-    print('取到的数据哈哈哈===>>>>${jsonString}');
     return (jsonString == null || jsonString.isEmpty)
         ? null
         : convert.jsonDecode(jsonString);
   }
 
   //移除
-  static Future<bool> removeWithKey(String key) {
+  static Future<bool> removeWithKey(String key) async {
+    await SpUtil.getInstance();
     key = LZEncryptUtils.aesEncrypt(key);
     return SpUtil.remove(key);
   }

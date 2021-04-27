@@ -1939,7 +1939,6 @@ class Filme_MULTI_IMAGE_Widget extends StatelessWidget {
  * 短视频的GridView
  */
 class ShortPageGridView extends StatelessWidget {
-
   final List<ShortVideo> shortVideo;
 
   const ShortPageGridView({Key key, this.shortVideo}) : super(key: key);
@@ -1950,7 +1949,7 @@ class ShortPageGridView extends StatelessWidget {
       itemCount: shortVideo.length,
       //屏蔽无限高度
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        //数量
+          //数量
           crossAxisCount: 2,
           //横向间隔
           crossAxisSpacing: ScreenUtil().setWidth(10),
@@ -1963,6 +1962,7 @@ class ShortPageGridView extends StatelessWidget {
       },
     );
   }
+
   _build_short_movie_item(ShortVideo shortVideo) {
     return Container(
       child: Column(
@@ -1987,7 +1987,7 @@ class ShortPageGridView extends StatelessWidget {
                     child: Text(
                       shortVideo.content.videoDurationStr,
                       style:
-                      TextStyle(color: hexToColor('#f4f4f4'), fontSize: 13),
+                          TextStyle(color: hexToColor('#f4f4f4'), fontSize: 13),
                     ),
                   ),
                 ],
@@ -2008,4 +2008,3 @@ class ShortPageGridView extends StatelessWidget {
     );
   }
 }
-

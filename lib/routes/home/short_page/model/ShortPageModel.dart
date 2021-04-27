@@ -66,7 +66,7 @@ class ShortPageContent {
   Null recomTraceInfo;
   String srcType;
   int sequence;
-  int createTime;
+  String createTime;
 
   ShortPageContent(
       {this.id,

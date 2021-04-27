@@ -28,8 +28,10 @@ import 'package:movie_flz/routes/home/home_root/view.dart';
 import 'package:movie_flz/routes/home/home_single_image/view.dart';
 import 'package:movie_flz/routes/home/more_movies/view.dart';
 import 'package:movie_flz/routes/home/movie_category/view.dart';
+import 'package:movie_flz/routes/home/movie_detail/view.dart';
 import 'package:movie_flz/routes/home/schedule_list/view.dart';
 import 'package:movie_flz/routes/home/season_rank/view.dart';
+import 'package:movie_flz/routes/home/short_page/short_movie_play/view.dart';
 import 'package:movie_flz/routes/home/top_movies_list_view_widget/view.dart';
 import 'package:movie_flz/routes/look/root/view.dart';
 import 'package:movie_flz/routes/search/search_page/view.dart';
@@ -81,6 +83,12 @@ class RouteConfig {
   ///搜索页面
   static final String search_page = '/search';
 
+  ///电影详情页
+  static final String movie_detail = '/detail';
+
+  ///短片播放页
+  static final String short_movie_play = '/short_play';
+
   ///别名映射页面
   static final List<GetPage> getPages = [
     GetPage(name: main, page: () => MainPage()),
@@ -97,5 +105,7 @@ class RouteConfig {
     GetPage(name: season_rank, page: () => SeasonRankPage()),
     GetPage(name: schedule_page, page: () => ScheduleListPage()),
     GetPage(name: search_page, page: () => SearchPage()),
+    GetPage(name: movie_detail, page: () => MovieDetailPage()),
+    GetPage(name: short_movie_play, page: () => ShortMoviePlayPage()),
   ];
 }

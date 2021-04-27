@@ -237,6 +237,7 @@ class _HomeFilmPageState extends State<HomeFilmPage>
           } else if (sectionType == 'SHEET' && display == 'SCROLL') {
             //专属片单
             return FilmListSHEETWidget(
+              key: UniqueKey(),
               click_more: () {
                 //查看更多
                 Get.toNamed(RouteConfig.list_card_more, arguments: {

@@ -51,6 +51,7 @@ class HomeMovieLogic extends GetxController {
 
   //换一批
   Future<void> refushPeoplesLook({int sectionId}) async {
+    print("换一批的数据量=====>>>>${sectionId}");
     course_index++;
     var r = await NetTools.dio.get<String>(
       "section/search/change?cursor=${course_index * 6}&sectionId=${sectionId}",
@@ -68,7 +69,9 @@ class HomeMovieLogic extends GetxController {
         //数据替换
         homeMovieInfo.update((val) {
           val.sections.forEach((element) {
-            if (element.sectionType == "VIDEO" && element.display == "SCROLL") {
+            if (element.sectionType == "VIDEO" &&
+                element.display == "SCROLL" &&
+                (element.id == sectionId)) {
               element.sectionContents = sectionContents;
             }
           });
