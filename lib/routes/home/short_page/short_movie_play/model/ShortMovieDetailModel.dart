@@ -169,7 +169,7 @@ class ShortMovieAuthor {
   String sign;
   String intro;
   Null addGrowth;
-  Null videoCount;
+  int videoCount;
   int seasonCount;
   bool focused;
   String certLabel;
