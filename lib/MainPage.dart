@@ -93,9 +93,12 @@ class _MainPageState extends State<MainPage> {
 
   //底部的组件
   _buildBottomNavigator() {
+    var tempHeight = ScreenUtil().bottomBarHeight == 0
+        ? ScreenUtil().setHeight(110)
+        : ScreenUtil().bottomBarHeight + ScreenUtil().setHeight(40);
     return BottomAppBar(
       child: Container(
-        height: ScreenUtil().bottomBarHeight + ScreenUtil().setHeight(40),
+        height: tempHeight,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: logic.configModel.value.homeBarPage.map((e) {
