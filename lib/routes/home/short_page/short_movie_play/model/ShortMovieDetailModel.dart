@@ -290,7 +290,7 @@ class ShortMovieVideoDetailView {
   String videoStatusType;
   List<ShortMovieVideoFileView> videoFileView;
   int favCount;
-  Null copyrightText;
+  String copyrightText;
   bool selfSource;
   bool commentRestricted;
   ShortMovieAuthor author;

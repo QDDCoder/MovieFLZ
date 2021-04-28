@@ -44,6 +44,14 @@ dependencies:
   encrypt: ^5.0.0
   webview_flutter: ^2.0.4
 
+
+  auto_orientation:
+  screen:
+
+  sys_volume:
+    git:
+      url: https://github.com/befovy/flutter_volume.git
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

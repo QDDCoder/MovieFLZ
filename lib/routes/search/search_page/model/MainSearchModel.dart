@@ -105,8 +105,8 @@ class SearchRecommendDtos {
   int orderNum;
   String searchKeyword;
   int hotRecommendId;
-  String createTime;
-  String updateTime;
+  int createTime;
+  int updateTime;
 
   SearchRecommendDtos(
       {this.id,

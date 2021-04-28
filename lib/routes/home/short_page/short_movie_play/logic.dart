@@ -5,10 +5,15 @@ import 'package:movie_flz/config/Global.dart';
 import 'package:movie_flz/config/NetTools.dart';
 
 import 'model/ShortMovieDetailModel.dart';
+import 'model/ShortWatchModel.dart';
 
 class ShortMoviePlayLogic extends GetxController {
+  final clickmore = false.obs;
   final shortMovieInfo = ShortMovieDetailModel().obs;
-  //获取用户项目列表
+
+  final shortWatchModel = ShortWatchModel().obs;
+
+  //获取短视频详情
   Future<void> getShortMovieInfo({movieId}) async {
     var r = await NetTools.dio.get<String>(
         "v3plus/video/detail?albumId=&token=rrtv-4277f839d5c35e69f81da643d8cc5ff2c95b0378&videoId=${movieId}");
@@ -18,8 +23,29 @@ class ShortMoviePlayLogic extends GetxController {
     shortMovieInfo.update((val) {
       ShortMovieDetailModel tempModel =
           ShortMovieDetailModel.fromJson(convert.jsonDecode(r.data)['data']);
+
       val.recommendVideoList.addAll(tempModel.recommendVideoList);
+      val.videoDetailView = tempModel.videoDetailView;
     });
     //json 转 Map 转 更新
+  }
+
+  //获取短视频播放详情
+  Future<void> getShortWatchMovieInfo({movieId}) async {
+    var r = await NetTools.dio.get<String>(
+        "watch/get_video_info?quality=super&subtitle=3&videoId=${movieId}");
+    //缓存
+    print('信息呢===>>>>>${r.data}');
+    Global.netCache.cache.clear();
+    shortWatchModel.update((val) {
+      ShortWatchModel tempModel =
+          ShortWatchModel.fromJson(convert.jsonDecode(r.data)['data']);
+      val.m3u8 = tempModel.m3u8;
+    });
+    //json 转 Map 转 更新
+  }
+
+  Future<void> changeClickMore() {
+    clickmore.value = !clickmore.value;
   }
 }
