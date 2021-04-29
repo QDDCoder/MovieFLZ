@@ -58,7 +58,7 @@ class _HomePageState extends State<HomePage>
         titleSpacing: 0.0,
         backgroundColor: Colors.transparent,
         toolbarHeight:
-            ScreenUtil().statusBarHeight + ScreenUtil().setHeight(44),
+            ScreenUtil().statusBarHeight ?? 0 + ScreenUtil().setHeight(44),
         flexibleSpace: _build_custom_appbar(),
       ),
     );
@@ -192,7 +192,7 @@ class _HomePageState extends State<HomePage>
    */
   buildTopAppBar() {
     return Container(
-      margin: EdgeInsets.only(top: ScreenUtil().statusBarHeight - 4),
+      margin: EdgeInsets.only(top: (ScreenUtil()?.statusBarHeight ?? 0) - 4),
       child: Row(
         children: [
           //左侧的logo

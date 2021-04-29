@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/screen_util.dart';
 import 'package:get/get.dart';
+import 'package:movie_flz/routes/home/home_root/views/HomeMovieView.dart';
 import 'package:movie_flz/tools/ColorTools.dart';
-import 'package:video_player/video_player.dart';
+import 'package:movie_flz/tools/video/video_player_UI.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import 'logic.dart';
+import 'model/MovieCommentModel.dart';
 import 'model/ShortMovieDetailModel.dart';
 
 class ShortMoviePlayPage extends StatefulWidget {
@@ -16,6 +19,20 @@ class ShortMoviePlayPage extends StatefulWidget {
 class _ShortMoviePlayPageState extends State<ShortMoviePlayPage> {
   final ShortMoviePlayLogic logic = Get.put(ShortMoviePlayLogic());
 
+  RefreshController _refreshController =
+      RefreshController(initialRefresh: false);
+
+  void _onLoading() async {
+    await logic.getMovieCommentInfos(movieId: _movieId).then((value) {
+      if (logic.movieCommentModel.value.isEnd) {
+        //没有更多数据了
+        _refreshController.loadNoData();
+      } else {
+        _refreshController.loadComplete();
+      }
+    });
+  }
+
   int _movieId = 0;
 
   @override
@@ -25,6 +42,7 @@ class _ShortMoviePlayPageState extends State<ShortMoviePlayPage> {
 
     logic.getShortMovieInfo(movieId: _movieId);
     logic.getShortWatchMovieInfo(movieId: _movieId);
+    logic.getMovieCommentInfos(movieId: _movieId);
     super.initState();
   }
 
@@ -60,13 +78,23 @@ class _ShortMoviePlayPageState extends State<ShortMoviePlayPage> {
     return Container(
       color: Colors.black,
       padding: EdgeInsets.only(top: ScreenUtil().statusBarHeight),
-      height: ScreenUtil().setHeight(430),
+      height: logic.isFullScreen.value
+          ? ScreenUtil().screenWidth
+          : ScreenUtil().setHeight(430),
       child: logic.shortWatchModel.value.m3u8 == null
           ? Container()
-          : ShortWatchPlayer(
-              video_link: logic.shortWatchModel.value.m3u8.webUrl,
-              video_cover_link:
-                  logic.shortMovieInfo.value.videoDetailView?.cover ?? '',
+          : VideoPlayerUI.network(
+              url: logic.shortWatchModel.value.m3u8.webUrl,
+              title: "",
+              share: () async {
+                // await myBottomTip(context,
+                //     title: '关于', desp: '飞鱼是一个极简的播放器，它是我最近的一个Flutter项目。');
+              },
+              full: (bool full) async {
+                logic.changeFullScreen();
+                // await myBottomTip(context,
+                //     title: '关于', desp: full ? '全屏--》未全屏' : '未全屏--》全屏');
+              },
             ),
     );
   }
@@ -74,7 +102,7 @@ class _ShortMoviePlayPageState extends State<ShortMoviePlayPage> {
   /**
    * 中间的信息条
    */
-  _build_top_movie_info() {
+  _build_top_movie_info(String titleInfo, {double marginTop = 24}) {
     return Container(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -90,20 +118,22 @@ class _ShortMoviePlayPageState extends State<ShortMoviePlayPage> {
           Divider(
             height: 1,
           ),
-          Container(
-            margin: EdgeInsets.only(
-                top: ScreenUtil().setHeight(24),
-                left: ScreenUtil().setWidth(20),
-                right: ScreenUtil().setWidth(20)),
-            child: Text(
-              '相关视频',
-              style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 20,
-                  fontWeight: FontWeight.w500),
-            ),
-          ),
+          _build_top_title_info(marginTop, titleInfo),
         ],
+      ),
+    );
+  }
+
+  _build_top_title_info(double marginTop, String titleInfo) {
+    return Container(
+      margin: EdgeInsets.only(
+          top: ScreenUtil().setHeight(marginTop),
+          left: ScreenUtil().setWidth(20),
+          right: ScreenUtil().setWidth(20)),
+      child: Text(
+        titleInfo,
+        style: TextStyle(
+            color: Colors.black, fontSize: 20, fontWeight: FontWeight.w500),
       ),
     );
   }
@@ -363,24 +393,44 @@ class _ShortMoviePlayPageState extends State<ShortMoviePlayPage> {
       child: MediaQuery.removePadding(
         removeTop: true,
         context: context,
-        child: CustomScrollView(
-          slivers: [
-            // 如果不是Sliver家族的Widget，需要使用SliverToBoxAdapter做层包裹
-            SliverToBoxAdapter(child: _build_top_movie_info()),
-            SliverFixedExtentList(
-              itemExtent: ScreenUtil().setHeight(130),
-              delegate: SliverChildBuilderDelegate(
-                _build_movie_item,
-                childCount:
-                    logic.shortMovieInfo.value.recommendVideoList.length,
+        child: PullAndPushWidget(
+          enablePullDown: false,
+          controller: _refreshController,
+          onLoading: _onLoading,
+          childWidget: CustomScrollView(
+            slivers: [
+              // 如果不是Sliver家族的Widget，需要使用SliverToBoxAdapter做层包裹
+              SliverToBoxAdapter(child: _build_top_movie_info('相关视频')),
+              //相关视频
+              SliverFixedExtentList(
+                itemExtent: ScreenUtil().setHeight(130),
+                delegate: SliverChildBuilderDelegate(
+                  _build_movie_item,
+                  childCount:
+                      logic.shortMovieInfo.value.recommendVideoList.length,
+                ),
               ),
-            )
-          ],
+              SliverToBoxAdapter(
+                child: _build_top_title_info(50, '全部评论'),
+              ),
+              //全部评论
+              SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  _build_comment_item,
+                  childCount:
+                      logic.movieCommentModel.value?.content?.length ?? 0,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
+  /**
+   * 电影的item
+   */
   Widget _build_movie_item(BuildContext context, int index) {
     ShortMovieRecommendVideoList item =
         logic.shortMovieInfo.value.recommendVideoList[index];
@@ -440,93 +490,200 @@ class _ShortMoviePlayPageState extends State<ShortMoviePlayPage> {
       ),
     );
   }
-}
 
-/**
- * 短视频的播放
- */
-class ShortWatchPlayer extends StatefulWidget {
-  final String video_link;
-  final String video_cover_link;
+  Widget _build_comment_item(BuildContext context, int index) {
+    MovieCommentContent _comment = logic.movieCommentModel.value.content[index];
+    return Container(
+      margin: EdgeInsets.only(
+          left: ScreenUtil().setWidth(20),
+          right: ScreenUtil().setWidth(20),
+          top: ScreenUtil().setHeight(20)),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ///用户信息
+          _user_info_widget(_comment),
 
-  const ShortWatchPlayer({Key key, this.video_link, this.video_cover_link})
-      : super(key: key);
+          //评论信息
+          _build_comment_infos(_comment),
 
-  @override
-  _ShortWatchPlayerState createState() => _ShortWatchPlayerState();
-}
+          //底部的赞和更多
+          _build_comment_action(_comment),
 
-class _ShortWatchPlayerState extends State<ShortWatchPlayer> {
-  VideoPlayerController _controller;
-  bool videoPrepared = false; //视频是否初始化
-  @override
-  void initState() {
-    // TODO: implement initState
-    _controller = VideoPlayerController.network(//定义连接器内容，这里初学者可能有点难懂下面详细讲
-        widget.video_link)
-      ..initialize().then((a) {
-        _controller.play();
-        videoPrepared = true;
-        setState(() {});
-      });
-
-    super.initState();
+          //底部的分割线
+          _build_bottom_div(),
+        ],
+      ),
+    );
   }
 
-  @override
-  void dispose() {
-    _controller.pause();
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      children: <Widget>[
-        Container(
-          color: Color(0XFF000000),
-          child: GestureDetector(
-            child: Stack(
-              children: <Widget>[
-                _controller.value.isInitialized
-                    ? Container(
-                        child: Center(
-                          child: AspectRatio(
-                            aspectRatio: _controller.value.aspectRatio,
-                            child: VideoPlayer(_controller),
-                          ),
-                        ),
-                      )
-                    : Center(
-                        child: CircularProgressIndicator(),
-                      ),
-              ],
-            ),
-            onTap: () {
-              if (_controller.value.isPlaying) {
-                _controller.pause();
-              } else {
-                _controller.play();
-              }
-            },
+  _user_info_widget(MovieCommentContent commentItem) {
+    return Row(
+      children: [
+        ClipRRect(
+          borderRadius: BorderRadius.circular(ScreenUtil().setWidth(30)),
+          child: SizedBox(
+            width: ScreenUtil().setWidth(60),
+            height: ScreenUtil().setWidth(60),
+            child: commentItem.author.headImgUrl == null
+                ? Image.asset(
+                    'src/icons/未登录头像.png',
+                    color: Colors.black54,
+                  )
+                : Image.network(
+                    commentItem.author.headImgUrl,
+                    fit: BoxFit.cover,
+                  ),
           ),
         ),
-        _getPreviewImage(),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              margin: EdgeInsets.only(
+                  left: ScreenUtil().setWidth(10),
+                  top: ScreenUtil().setHeight(2)),
+              child: Row(
+                children: [
+                  Text(
+                    commentItem.author.nickName,
+                    style: TextStyle(color: Colors.black54, fontSize: 11),
+                  ),
+                  Container(
+                    padding: EdgeInsets.only(
+                      left: ScreenUtil().setWidth(4),
+                      right: ScreenUtil().setWidth(4),
+                      top: ScreenUtil().setHeight(1),
+                      bottom: ScreenUtil().setHeight(1),
+                    ),
+                    decoration: BoxDecoration(
+                        color: Colors.indigoAccent,
+                        borderRadius:
+                            BorderRadius.circular(ScreenUtil().setWidth(8))),
+                    margin: EdgeInsets.only(left: ScreenUtil().setWidth(10)),
+                    child: Text(
+                      'LV.${commentItem.author.level}',
+                      style: TextStyle(color: Colors.white, fontSize: 8),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.only(
+                left: ScreenUtil().setWidth(10),
+              ),
+              child: Text(
+                commentItem.createTimeStr,
+                style: TextStyle(color: Colors.black54, fontSize: 10),
+              ),
+            ),
+          ],
+        ),
       ],
     );
   }
 
-  _getPreviewImage() {
-    return Visibility(
-      visible: !videoPrepared,
-      child: widget.video_cover_link == ''
-          ? Container()
-          : Container(
-              width: ScreenUtil().screenWidth,
-              height: ScreenUtil().screenHeight,
-              child: Image.network(widget.video_cover_link),
+  _build_comment_infos(MovieCommentContent commentItem) {
+    return Container(
+      margin: EdgeInsets.only(
+          left: ScreenUtil().setWidth(70), top: ScreenUtil().setHeight(26)),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          //评论的信息
+          Text(commentItem.content),
+          //评论的回复信息
+          Offstage(
+            offstage: !((commentItem.replies?.length ?? 0) > 0),
+            child: MediaQuery.removePadding(
+              //解决listview顶部有个空白的问题。
+              removeTop: true,
+              removeBottom: true,
+              context: context,
+              child: Container(
+                margin: EdgeInsets.only(top: ScreenUtil().setHeight(10)),
+                width: double.infinity,
+                decoration: BoxDecoration(
+                    color: Colors.black26,
+                    borderRadius:
+                        BorderRadius.circular(ScreenUtil().setWidth(6))),
+                padding: EdgeInsets.all(
+                  ScreenUtil().setWidth(20),
+                ),
+                child: ListView.builder(
+                    shrinkWrap: true, //为true可以解决子控件必须设置高度的问题
+                    physics: NeverScrollableScrollPhysics(), //禁用滑动事件
+                    itemCount: commentItem.replies?.length ?? 0,
+                    itemBuilder: (context, index) {
+                      return _build_comment_replay_info(
+                          commentItem.replies[index]);
+                    }),
+              ),
             ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  _build_comment_action(MovieCommentContent commentItem) {
+    return Padding(
+      padding: EdgeInsets.only(top: ScreenUtil().setHeight(20)),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Container(
+            width: ScreenUtil().setWidth(40),
+            height: ScreenUtil().setWidth(40),
+            child: Image.asset(
+              'src/icons/评论赞.png',
+              color: Colors.black54,
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.only(
+                left: ScreenUtil().setWidth(4),
+                right: ScreenUtil().setWidth(26),
+                bottom: ScreenUtil().setHeight(6)),
+            child: Text(
+              '${commentItem.likeCount > 0 ? '${commentItem.likeCount}' : ''}',
+              style: TextStyle(fontSize: 10),
+            ),
+          ),
+          Container(
+            width: ScreenUtil().setWidth(40),
+            height: ScreenUtil().setWidth(40),
+            child: Image.asset('src/icons/更多活动.png', color: Colors.black54),
+          ),
+        ],
+      ),
+    );
+  }
+
+  _build_bottom_div() {
+    return Container(
+      margin: EdgeInsets.only(
+          top: ScreenUtil().setHeight(20), bottom: ScreenUtil().setHeight(20)),
+      child: Divider(
+        height: 1,
+        color: Colors.black12,
+      ),
+    );
+  }
+
+  Widget _build_comment_replay_info(MovieCommentReplies replies) {
+    return Container(
+      child: RichText(
+          text: TextSpan(children: [
+        TextSpan(
+            text: replies.authorName + ":  ",
+            style: TextStyle(color: Colors.indigoAccent)),
+        TextSpan(text: replies.content, style: TextStyle(color: Colors.black87))
+      ])),
     );
   }
 }

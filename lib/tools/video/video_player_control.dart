@@ -3,11 +3,12 @@ import 'dart:async';
 import 'package:auto_orientation/auto_orientation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:movie_flz/tools/video/video_player_slider.dart';
 import 'package:video_player/video_player.dart';
 
 import './time.dart';
 import 'controller_widget.dart';
-import 'video_player_slider.dart';
 
 class VideoPlayerControl extends StatefulWidget {
   final Function share;
@@ -59,17 +60,28 @@ class VideoPlayerControlState extends State<VideoPlayerControl> {
           child: Offstage(
             offstage: _hidePlayControl,
             child: AnimatedOpacity(
-              // 加入透明度动画
-              opacity: _playControlOpacity,
-              duration: Duration(milliseconds: 300),
-              child: Column(
-                children: <Widget>[
-                  Offstage(offstage: lock, child: _top()),
-                  _middle(),
-                  Offstage(offstage: lock, child: _bottom(context))
-                ],
-              ),
-            ),
+                // 加入透明度动画
+                opacity: _playControlOpacity,
+                duration: Duration(milliseconds: 300),
+                child: Row(
+                  children: [
+                    Offstage(
+                      offstage: !_isFullScreen,
+                      child: SizedBox(
+                        width: ScreenUtil().setHeight(40),
+                      ),
+                    ),
+                    Expanded(
+                      child: Column(
+                        children: <Widget>[
+                          Offstage(offstage: lock, child: _top()),
+                          _middle(),
+                          Offstage(offstage: lock, child: _bottom(context)),
+                        ],
+                      ),
+                    ),
+                  ],
+                )),
           ),
           onWillPop: _onWillPop,
         ),
@@ -104,51 +116,80 @@ class VideoPlayerControlState extends State<VideoPlayerControl> {
           // 来点黑色到透明的渐变优雅一下
           begin: Alignment.bottomCenter,
           end: Alignment.topCenter,
-          colors: [Color.fromRGBO(0, 0, 0, .7), Color.fromRGBO(0, 0, 0, .1)],
+          colors: [
+            Color.fromRGBO(0, 0, 0, .7),
+            Color.fromRGBO(0, 0, 0, .5),
+            Color.fromRGBO(0, 0, 0, .5),
+            Color.fromRGBO(0, 0, 0, .5),
+            Color.fromRGBO(0, 0, 0, .5),
+            Color.fromRGBO(0, 0, 0, .4),
+            Color.fromRGBO(0, 0, 0, .2),
+            Color.fromRGBO(0, 0, 0, .1),
+            Color.fromRGBO(0, 0, 0, .0),
+          ],
         ),
       ),
       child: Row(
         // 加载完成时才渲染,flex布局
         children: <Widget>[
-          IconButton(
-            // 播放按钮
-            padding: EdgeInsets.zero,
-            iconSize: 26,
-            icon: Icon(
-              // 根据控制器动态变化播放图标还是暂停
-              controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
-              color: Colors.white,
+          Container(
+            width: ScreenUtil().setHeight(80),
+            height: ScreenUtil().setHeight(80),
+            child: IconButton(
+              // 播放按钮
+              padding: EdgeInsets.zero,
+              iconSize: 30,
+              icon: Icon(
+                // 根据控制器动态变化播放图标还是暂停
+                controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
+                color: Colors.white,
+              ),
+              onPressed: _playOrPause,
             ),
-            onPressed: _playOrPause,
+          ),
+          Container(
+            // 当前播放时间
+            child: Text(
+              '${_position == null ? '00:00' : videoTime(_position.inMilliseconds)}',
+              style: TextStyle(color: Colors.white, fontSize: 12),
+            ),
           ),
           Expanded(
             // 相当于前端的flex: 1
-            child: VideoPlayerSlider(
-              startPlayControlTimer: _startPlayControlTimer,
-              timer: _timer,
+            child: Container(
+              padding: EdgeInsets.only(
+                  left: ScreenUtil().setWidth(4),
+                  right: ScreenUtil().setWidth(4)),
+              child: VideoPlayerSlider(
+                startPlayControlTimer: _startPlayControlTimer,
+                timer: _timer,
+              ),
             ),
           ),
           Container(
             // 播放时间
-            margin: EdgeInsets.only(left: 10),
             child: Text(
-              '${_position == null ? '00:00' : videoTime(_position.inMilliseconds)}/${_totalDuration == null ? '00:00' : videoTime(_totalDuration.inMilliseconds)}',
-              style: TextStyle(color: Colors.white),
+              '${_totalDuration == null ? '00:00' : videoTime(_totalDuration.inMilliseconds)}',
+              style: TextStyle(color: Colors.white, fontSize: 12),
             ),
           ),
-          IconButton(
-            // 全屏/横屏按钮
-            padding: EdgeInsets.zero,
-            iconSize: 26,
-            icon: Icon(
-              // 根据当前屏幕方向切换图标
-              _isFullScreen ? Icons.fullscreen_exit : Icons.fullscreen,
-              color: Colors.white,
+          Container(
+            width: ScreenUtil().setHeight(80),
+            height: ScreenUtil().setHeight(80),
+            child: IconButton(
+              // 播放按钮
+              // padding: EdgeInsets.zero,
+              iconSize: 26,
+              icon: Icon(
+                // 根据当前屏幕方向切换图标
+                _isFullScreen ? Icons.fullscreen_exit : Icons.fullscreen,
+                color: Colors.white,
+              ),
+              onPressed: () {
+                // 点击切换是否全屏
+                _toggleFullScreen();
+              },
             ),
-            onPressed: () {
-              // 点击切换是否全屏
-              _toggleFullScreen();
-            },
           ),
         ],
       ),
@@ -206,12 +247,14 @@ class VideoPlayerControlState extends State<VideoPlayerControl> {
       width: double.infinity,
       height: 40,
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          // 来点黑色到透明的渐变优雅一下
-          begin: Alignment.bottomCenter,
-          end: Alignment.topCenter,
-          colors: [Color.fromRGBO(0, 0, 0, .7), Color.fromRGBO(0, 0, 0, .1)],
-        ),
+        boxShadow: [
+          // 阴影
+          BoxShadow(
+              color: Color.fromRGBO(0, 0, 0, .5),
+              blurRadius: 20,
+              spreadRadius: 10,
+              offset: Offset(0, -1))
+        ],
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -309,10 +352,11 @@ class VideoPlayerControlState extends State<VideoPlayerControl> {
         SystemChrome.setEnabledSystemUIOverlays(
             [SystemUiOverlay.top, SystemUiOverlay.bottom]);
       } else {
-        AutoOrientation.landscapeAutoMode();
+        AutoOrientation.landscapeRightMode();
 
         ///关闭状态栏，与底部虚拟操作按钮
-        SystemChrome.setEnabledSystemUIOverlays([]);
+        SystemChrome.setEnabledSystemUIOverlays(
+            [SystemUiOverlay.top, SystemUiOverlay.bottom]);
       }
       _startPlayControlTimer(); // 操作完控件开始计时隐藏
     });

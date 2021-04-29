@@ -1191,18 +1191,20 @@ class PullAndPushWidget extends StatelessWidget {
   final Function onRefresh;
   final Function onLoading;
   final Widget childWidget;
+  final bool enablePullDown;
 
   const PullAndPushWidget(
       {Key key,
       this.controller,
       this.onRefresh,
       this.onLoading,
-      this.childWidget})
+      this.childWidget,
+      this.enablePullDown = true})
       : super(key: key);
   @override
   Widget build(BuildContext context) {
     return SmartRefresher(
-      enablePullDown: true,
+      enablePullDown: enablePullDown,
       enablePullUp: onLoading != null,
       header: WaterDropHeader(),
       footer: CustomFooter(

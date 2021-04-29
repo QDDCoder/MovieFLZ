@@ -53,22 +53,21 @@ class _VideoPlayerSliderState extends State<VideoPlayerSlider> {
   Widget build(BuildContext context) {
     return SliderTheme(
         data: SliderTheme.of(context).copyWith(
-          //提示进度的气泡文本的颜色
-          valueIndicatorTextStyle: TextStyle(
-            color: Colors.black,
-          ),
+          trackHeight: 1,
+          overlayShape: RoundSliderOverlayShape(overlayRadius: 6),
+          thumbShape: RoundSliderThumbShape(enabledThumbRadius: 6),
         ),
         child: Slider(
           value: progressValue,
-          label: labelProgress,
+          // label: labelProgress,
           divisions: 100,
           onChangeStart: _onChangeStart,
           onChangeEnd: _onChangeEnd,
           onChanged: _onChanged,
           min: 0,
           max: 100,
-          activeColor: Colors.yellow,
-          inactiveColor: Colors.white,
+          activeColor: Colors.indigoAccent,
+          inactiveColor: Colors.white54,
         ));
   }
 

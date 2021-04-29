@@ -38,15 +38,16 @@ dependencies:
   flutter_star:
   cached_network_image: ^2.5.1
   # 视频播放器
-  chewie:
+#  chewie:
   video_player:
-  flustars: ^2.0.1
-  encrypt: ^5.0.0
+  flustars:
+  encrypt:
   webview_flutter: ^2.0.4
 
 
   auto_orientation:
   screen:
+  dlna:
 
   sys_volume:
     git:

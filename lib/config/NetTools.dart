@@ -42,6 +42,7 @@ class NetTools {
     'clientVersion': '5.2.1',
     'token': 'rrtv-ae2ab2685b576252335861a93fa304f7b24eb81c',
     'sign': '2627cc845f66ec7616dadfcc04c9c3ef',
+    'st': '7edb9c4fcbced1a6c6626dae6b7b8f8d',
   }));
 
   static void init() {

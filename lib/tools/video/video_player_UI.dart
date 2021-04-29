@@ -1,8 +1,12 @@
 import 'dart:io';
 import 'dart:ui';
+
 import 'package:flutter/material.dart';
+import 'package:movie_flz/tools/video/tv.dart';
+import 'package:movie_flz/tools/video/widget/myBottomSheet.dart';
 import 'package:screen/screen.dart';
 import 'package:video_player/video_player.dart';
+
 import 'controller_widget.dart';
 import 'video_player_control.dart';
 import 'video_player_pan.dart';
@@ -124,16 +128,10 @@ class _VideoPlayerUIState extends State<VideoPlayerUI> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      top: !_isFullScreen,
-      bottom: !_isFullScreen,
-      left: !_isFullScreen,
-      right: !_isFullScreen,
-      child: Container(
-        width: _isFullScreen ? _window.width : widget.width,
-        height: _isFullScreen ? _window.height : widget.height,
-        child: _isHadUrl(),
-      ),
+    return Container(
+      width: _isFullScreen ? _window.width : widget.width,
+      height: _isFullScreen ? _window.height : widget.height,
+      child: _isHadUrl(),
     );
   }
 
@@ -146,7 +144,10 @@ class _VideoPlayerUIState extends State<VideoPlayerUI> {
         videoInit: _videoInit,
         title: widget.title,
         child: VideoPlayerPan(
-          share: widget.share,
+          share: () {
+            shareTV();
+            widget.share();
+          },
           full: widget.full,
           child: Container(
             alignment: Alignment.center,
@@ -165,6 +166,19 @@ class _VideoPlayerUIState extends State<VideoPlayerUI> {
         ),
       );
     }
+  }
+
+  shareTV() async {
+    if (!_videoInit) return;
+    await _controller?.pause();
+    await Navigator.push(
+        context,
+        MyBottomSheet(
+            child: TV(
+          video_name: widget.title,
+          video_play_link: widget.url,
+        )));
+    await _controller?.play();
   }
 
 // 加载url成功时，根据视频比例渲染播放器
