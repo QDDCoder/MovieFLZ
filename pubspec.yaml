@@ -39,19 +39,26 @@ dependencies:
   cached_network_image: ^2.5.1
   # 视频播放器
 #  chewie:
-  video_player:
   flustars:
   encrypt:
   webview_flutter: ^2.0.4
 
-
+  # 自带的播放器
+  video_player:
   auto_orientation:
   screen:
   dlna:
-
   sys_volume:
     git:
       url: https://github.com/befovy/flutter_volume.git
+
+  # 腾讯的播放器
+  flutter_tencentplayer:
+  flutter_forbidshot:
+  path_provider:
+  image_picker:
+
+  flutter_keyboard_visibility:
 
 dev_dependencies:
   flutter_test:

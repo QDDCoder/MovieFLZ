@@ -182,10 +182,40 @@
       "languageVersion": "2.6"
     },
     {
+      "name": "flutter_forbidshot",
+      "rootUri": "file:///Users/zhanyalei/flutter/.pub-cache/hosted/pub.flutter-io.cn/flutter_forbidshot-0.0.2",
+      "packageUri": "lib/",
+      "languageVersion": "2.1"
+    },
+    {
+      "name": "flutter_keyboard_visibility",
+      "rootUri": "file:///Users/zhanyalei/flutter/.pub-cache/hosted/pub.flutter-io.cn/flutter_keyboard_visibility-4.0.6",
+      "packageUri": "lib/",
+      "languageVersion": "2.1"
+    },
+    {
+      "name": "flutter_keyboard_visibility_platform_interface",
+      "rootUri": "file:///Users/zhanyalei/flutter/.pub-cache/hosted/pub.flutter-io.cn/flutter_keyboard_visibility_platform_interface-1.0.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.1"
+    },
+    {
+      "name": "flutter_keyboard_visibility_web",
+      "rootUri": "file:///Users/zhanyalei/flutter/.pub-cache/hosted/pub.flutter-io.cn/flutter_keyboard_visibility_web-1.0.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.1"
+    },
+    {
       "name": "flutter_page_indicator",
       "rootUri": "file:///Users/zhanyalei/flutter/.pub-cache/hosted/pub.flutter-io.cn/flutter_page_indicator-0.0.3",
       "packageUri": "lib/",
       "languageVersion": "2.0"
+    },
+    {
+      "name": "flutter_plugin_android_lifecycle",
+      "rootUri": "file:///Users/zhanyalei/flutter/.pub-cache/hosted/pub.flutter-io.cn/flutter_plugin_android_lifecycle-1.0.11",
+      "packageUri": "lib/",
+      "languageVersion": "2.1"
     },
     {
       "name": "flutter_screenutil",
@@ -204,6 +234,12 @@
       "rootUri": "file:///Users/zhanyalei/flutter/.pub-cache/hosted/pub.flutter-io.cn/flutter_swiper-1.1.6",
       "packageUri": "lib/",
       "languageVersion": "2.0"
+    },
+    {
+      "name": "flutter_tencentplayer",
+      "rootUri": "file:///Users/zhanyalei/flutter/.pub-cache/hosted/pub.flutter-io.cn/flutter_tencentplayer-0.14.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
     },
     {
       "name": "flutter_test",
@@ -246,6 +282,18 @@
       "rootUri": "file:///Users/zhanyalei/flutter/.pub-cache/hosted/pub.flutter-io.cn/image-2.1.19",
       "packageUri": "lib/",
       "languageVersion": "2.0"
+    },
+    {
+      "name": "image_picker",
+      "rootUri": "file:///Users/zhanyalei/flutter/.pub-cache/hosted/pub.flutter-io.cn/image_picker-0.6.7+22",
+      "packageUri": "lib/",
+      "languageVersion": "2.1"
+    },
+    {
+      "name": "image_picker_platform_interface",
+      "rootUri": "file:///Users/zhanyalei/flutter/.pub-cache/hosted/pub.flutter-io.cn/image_picker_platform_interface-1.1.6",
+      "packageUri": "lib/",
+      "languageVersion": "2.5"
     },
     {
       "name": "js",
@@ -542,7 +590,7 @@
       "languageVersion": "2.7"
     }
   ],
-  "generated": "2021-04-29T10:19:54.761714Z",
+  "generated": "2021-04-30T07:08:09.110897Z",
   "generator": "pub",
   "generatorVersion": "2.12.3"
 }

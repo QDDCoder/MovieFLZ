@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_screenutil/screen_util.dart';
 import 'package:get/get.dart';
 import 'package:movie_flz/routes/home/home_root/views/HomeMovieView.dart';
 import 'package:movie_flz/tools/ColorTools.dart';
-import 'package:movie_flz/tools/video/video_player_UI.dart';
+import 'package:movie_flz/tools/InputWidget.dart';
+import 'package:movie_flz/tools/normal_video/video_player_UI.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import 'logic.dart';
@@ -21,6 +23,8 @@ class _ShortMoviePlayPageState extends State<ShortMoviePlayPage> {
 
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
+
+  InputWidget _inputWidget = InputWidget();
 
   void _onLoading() async {
     await logic.getMovieCommentInfos(movieId: _movieId).then((value) {
@@ -42,16 +46,31 @@ class _ShortMoviePlayPageState extends State<ShortMoviePlayPage> {
 
     logic.getShortMovieInfo(movieId: _movieId);
     logic.getShortWatchMovieInfo(movieId: _movieId);
-    logic.getMovieCommentInfos(movieId: _movieId);
+    logic.getMovieCommentInfos(movieId: _movieId).then((value) {
+      if (logic.movieCommentModel.value.isEnd) {
+        //没有更多数据了
+        _refreshController.loadNoData();
+      } else {
+        _refreshController.loadComplete();
+      }
+    });
+
+    //提交评论
+    _inputWidget.pushCallBack = () {
+      // logic.replay_comment(content, parentId, reply2Id, type, typeId)
+    };
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    final bool isKeyboardVisible =
+        KeyboardVisibilityProvider.isKeyboardVisible(context);
     return Obx(() {
       return AnnotatedRegion(
           value: SystemUiOverlayStyle.light,
           child: Scaffold(
+            // resizeToAvoidBottomInset: false,
             backgroundColor: hexToColor('#f9f9f9'),
             body: Container(
               margin: EdgeInsets.only(
@@ -62,8 +81,12 @@ class _ShortMoviePlayPageState extends State<ShortMoviePlayPage> {
                 children: [
                   //顶部的视频
                   _build_top_movie_player(),
+
                   //相关的视频
                   _build_bottom_movies(),
+                  _inputWidget,
+                  //底部的评论输入
+                  _build_bottom_input(isKeyboardVisible),
                 ],
               ),
             ),
@@ -442,12 +465,12 @@ class _ShortMoviePlayPageState extends State<ShortMoviePlayPage> {
       margin: EdgeInsets.only(
           top: ScreenUtil().setHeight(16),
           left: ScreenUtil().setWidth(20),
-          right: ScreenUtil().setWidth(20)),
+          right: ScreenUtil().setWidth(0)),
       height: ScreenUtil().setHeight(130),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          //图标
+          //电影的图片
           Container(
               width: ScreenUtil().setWidth(240),
               height: ScreenUtil().setHeight(140),
@@ -684,6 +707,66 @@ class _ShortMoviePlayPageState extends State<ShortMoviePlayPage> {
             style: TextStyle(color: Colors.indigoAccent)),
         TextSpan(text: replies.content, style: TextStyle(color: Colors.black87))
       ])),
+    );
+  }
+
+  //底部的输入
+  _build_bottom_input(bool isKeyboardVisible) {
+    var commentConunt = logic.movieCommentModel.value?.total ?? 0;
+    return Offstage(
+      offstage: isKeyboardVisible,
+      child: Container(
+        height: ScreenUtil().setHeight(60) + ScreenUtil().bottomBarHeight,
+        padding: EdgeInsets.only(
+            top: ScreenUtil().setHeight(16),
+            left: ScreenUtil().setWidth(20),
+            right: ScreenUtil().setWidth(20)),
+        color: Colors.white,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            //左侧的评论输入框
+            Expanded(
+              child: GestureDetector(
+                onTap: () {
+                  ///弹出键盘处理
+                  FocusScope.of(context)
+                      .requestFocus(_inputWidget.textFiledFocusNode);
+                },
+                child: Container(
+                  padding: EdgeInsets.only(
+                      left: ScreenUtil().setWidth(20),
+                      top: ScreenUtil().setHeight(8),
+                      bottom: ScreenUtil().setHeight(8)),
+                  child: Text(
+                    '我来说一说',
+                    style: TextStyle(color: Colors.black54),
+                  ),
+                  decoration: BoxDecoration(
+                      color: Colors.black12,
+                      borderRadius:
+                          BorderRadius.circular(ScreenUtil().setHeight(30))),
+                ),
+              ),
+            ),
+            //右侧的评论数量
+            Container(
+              margin: EdgeInsets.only(
+                  top: ScreenUtil().setHeight(6),
+                  left: ScreenUtil().setWidth(30),
+                  right: ScreenUtil().setWidth(10)),
+              width: ScreenUtil().setWidth(40),
+              // height: ScreenUtil().setHeight(20),
+              child: Image.asset('src/icons/消息.png'),
+            ),
+            Container(
+              margin: EdgeInsets.only(top: ScreenUtil().setHeight(6)),
+              // height: ScreenUtil().setHeight(20),
+              child: Text(commentConunt > 0 ? "${commentConunt}" : ''),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

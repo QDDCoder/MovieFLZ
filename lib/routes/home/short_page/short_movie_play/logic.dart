@@ -77,6 +77,29 @@ class ShortMoviePlayLogic extends GetxController {
     });
   }
 
+  //回复评论
+  Future<void> replay_comment(String content, String parentId, String reply2Id,
+      String type, String typeId) async {
+    //https://api.rr.tv/v3plus/comment/create
+    var data = {
+      'content': content,
+      'parentId': parentId,
+      'reply2Id': reply2Id,
+      'type': type,
+      'typeId': typeId,
+    };
+    //
+    var r = await NetTools.dio
+        .post<String>("v3plus/comment/create", queryParameters: data);
+    //缓存
+    Global.netCache.cache.clear();
+    movieCommentModel.update((val) {
+      MovieCommentContent tempModel =
+          MovieCommentContent.fromJson(convert.jsonDecode(r.data)['data']);
+      movieCommentModel.value.content.insert(0, tempModel);
+    });
+  }
+
   //是否点击的更多
   Future<void> changeClickMore() {
     clickmore.value = !clickmore.value;
