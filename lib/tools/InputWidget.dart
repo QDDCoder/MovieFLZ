@@ -28,8 +28,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class InputWidget extends StatefulWidget {
   FocusNode textFiledFocusNode = FocusNode();
+  String parentId = '';
+  String reply2Id = '';
+  String type = 'VIDEO';
+  String typeId = '';
 
-  Function pushCallBack = () {};
+  Function pushCallBack = (String) {};
   InputWidget({Key key}) : super(key: key);
   @override
   _InputWidgetState createState() => _InputWidgetState();
@@ -161,7 +165,8 @@ class _InputWidgetState extends State<InputWidget> {
           //发表
           GestureDetector(
             onTap: () {
-              widget.pushCallBack();
+              widget.pushCallBack(editingController.text, widget.parentId,
+                  widget.reply2Id, widget.type, widget.typeId);
             },
             child: Container(
               decoration: BoxDecoration(

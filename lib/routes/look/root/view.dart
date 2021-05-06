@@ -329,8 +329,11 @@ class _LookMoviePlayerPageState extends State<LookMoviePlayerPage> {
           //头像信息
           _build_head_info(),
           //按钮信息
-          _build_action_button(icon: 'src/icons/赞.png', number: '99'),
-          _build_action_button(icon: 'src/icons/消息.png', number: '99'),
+          _build_action_button(
+              icon: 'src/icons/赞.png', number: '${widget.itemModel.likeCount}'),
+          _build_action_button(
+              icon: 'src/icons/消息.png',
+              number: '${widget.itemModel.commentCount}'),
           _build_action_button(icon: 'src/icons/更多.png', number: ''),
         ],
       ),

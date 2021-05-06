@@ -34,13 +34,16 @@ class SearchPageLogic extends GetxController {
     var tempModel = await LZStorageUtils.getModelWithKey('historyList');
     if (tempModel == null) {
       Map<String, List> _tempModel = Map<String, List>();
+
       _tempModel[historyListInkey] = [serachInfo];
       LZStorageUtils.saveModel('historyList', _tempModel);
     } else {
       List<dynamic> temp = tempModel[historyListInkey];
-      temp.add(serachInfo);
-      tempModel[historyListInkey] = temp;
-      await LZStorageUtils.saveModel('historyList', tempModel);
+      if (!temp.contains(serachInfo)) {
+        temp.add(serachInfo);
+        tempModel[historyListInkey] = temp;
+        await LZStorageUtils.saveModel('historyList', tempModel);
+      }
     }
     getSearchList();
   }

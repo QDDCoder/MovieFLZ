@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:movie_flz/tools/Toast.dart';
@@ -469,30 +470,38 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          data.searchRecommendDtos[index].title,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(fontSize: 16),
-                        ),
                         Container(
-                          margin: EdgeInsets.only(
-                              left: ScreenUtil().setWidth(6),
-                              top: ScreenUtil().setHeight(4)),
-                          padding: EdgeInsets.only(
-                              left: ScreenUtil().setWidth(5),
-                              right: ScreenUtil().setWidth(5),
-                              bottom: ScreenUtil().setHeight(2)),
-                          decoration: BoxDecoration(
-                            borderRadius:
-                                BorderRadius.circular(ScreenUtil().setWidth(4)),
-                            color: Colors.redAccent,
-                          ),
+                          margin:
+                              EdgeInsets.only(top: ScreenUtil().setHeight(2)),
                           child: Text(
-                            data.searchRecommendDtos[index].label,
-                            style: TextStyle(fontSize: 10, color: Colors.white),
+                            data.searchRecommendDtos[index].title,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.start,
+                            style: TextStyle(fontSize: 16, height: 1.1),
                           ),
                         ),
+                        data.searchRecommendDtos[index].label == ''
+                            ? Container()
+                            : Container(
+                                margin: EdgeInsets.only(
+                                    left: ScreenUtil().setWidth(6),
+                                    top: ScreenUtil().setHeight(4)),
+                                padding: EdgeInsets.only(
+                                    left: ScreenUtil().setWidth(5),
+                                    right: ScreenUtil().setWidth(5),
+                                    bottom: ScreenUtil().setHeight(2)),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(
+                                      ScreenUtil().setWidth(4)),
+                                  color: Colors.redAccent,
+                                ),
+                                child: Text(
+                                  data.searchRecommendDtos[index].label,
+                                  style: TextStyle(
+                                      fontSize: 10, color: Colors.white),
+                                ),
+                              ),
                       ],
                     ),
                     //底部的subtittle

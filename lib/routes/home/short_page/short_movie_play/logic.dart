@@ -91,13 +91,47 @@ class ShortMoviePlayLogic extends GetxController {
     //
     var r = await NetTools.dio
         .post<String>("v3plus/comment/create", queryParameters: data);
-    //缓存
-    Global.netCache.cache.clear();
-    movieCommentModel.update((val) {
-      MovieCommentContent tempModel =
-          MovieCommentContent.fromJson(convert.jsonDecode(r.data)['data']);
-      movieCommentModel.value.content.insert(0, tempModel);
-    });
+    if (r.statusCode == 200) {
+      //缓存
+      Global.netCache.cache.clear();
+      movieCommentModel.update((val) {
+        MovieCommentContent tempModel =
+            MovieCommentContent.fromJson(convert.jsonDecode(r.data)['data']);
+        movieCommentModel.value.content.insert(0, tempModel);
+      });
+    } else {
+      //弹出错误信息
+    }
+    return;
+  }
+
+  //点击喜欢收藏
+  Future<void> liked_reply(int clickIndex) async {
+    //https://api.rr.tv/like/add
+    var postUrl = 'like/add';
+    if (movieCommentModel.value.content[clickIndex].liked) {
+      postUrl = 'like/del';
+    } else {
+      postUrl = 'like/add';
+    }
+    var data = {
+      'commentId': movieCommentModel.value.content[clickIndex].id,
+      'token': 'rrtv-ae2ab2685b576252335861a93fa304f7b24eb81c',
+    };
+    //
+    var r = await NetTools.dio.post<String>(postUrl, queryParameters: data);
+    if (r.statusCode == 200) {
+      //缓存
+      Global.netCache.cache.clear();
+      movieCommentModel.value.content[clickIndex].liked =
+          !movieCommentModel.value.content[clickIndex].liked;
+      movieCommentModel.value.content[clickIndex].liked
+          ? movieCommentModel.value.content[clickIndex].likeCount++
+          : movieCommentModel.value.content[clickIndex].likeCount--;
+    } else {
+      //弹出错误信息
+    }
+    return;
   }
 
   //是否点击的更多

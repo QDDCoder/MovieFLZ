@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:movie_flz/routes/home/home_root/views/HomeMovieView.dart';
 import 'package:movie_flz/tools/ColorTools.dart';
 import 'package:movie_flz/tools/InputWidget.dart';
+import 'package:movie_flz/tools/Toast.dart';
 import 'package:movie_flz/tools/normal_video/video_player_UI.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -56,8 +57,16 @@ class _ShortMoviePlayPageState extends State<ShortMoviePlayPage> {
     });
 
     //提交评论
-    _inputWidget.pushCallBack = () {
-      // logic.replay_comment(content, parentId, reply2Id, type, typeId)
+    _inputWidget.pushCallBack = (info, parentId, reply2Id, type, typeId) {
+      if (info.length < 3) {
+        showToast('评论内容长度不小于3');
+        return;
+      }
+      logic
+          .replay_comment(info, parentId, reply2Id, type, typeId)
+          .then((value) {
+        //隐藏键盘
+      });
     };
     super.initState();
   }
@@ -109,14 +118,9 @@ class _ShortMoviePlayPageState extends State<ShortMoviePlayPage> {
           : VideoPlayerUI.network(
               url: logic.shortWatchModel.value.m3u8.webUrl,
               title: "",
-              share: () async {
-                // await myBottomTip(context,
-                //     title: '关于', desp: '飞鱼是一个极简的播放器，它是我最近的一个Flutter项目。');
-              },
+              share: () async {},
               full: (bool full) async {
                 logic.changeFullScreen();
-                // await myBottomTip(context,
-                //     title: '关于', desp: full ? '全屏--》未全屏' : '未全屏--》全屏');
               },
             ),
     );
@@ -516,27 +520,37 @@ class _ShortMoviePlayPageState extends State<ShortMoviePlayPage> {
 
   Widget _build_comment_item(BuildContext context, int index) {
     MovieCommentContent _comment = logic.movieCommentModel.value.content[index];
-    return Container(
-      margin: EdgeInsets.only(
-          left: ScreenUtil().setWidth(20),
-          right: ScreenUtil().setWidth(20),
-          top: ScreenUtil().setHeight(20)),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ///用户信息
-          _user_info_widget(_comment),
+    return GestureDetector(
+      onTap: () {
+        _inputWidget.typeId = '${_movieId}';
+        _inputWidget.parentId = '${_movieId}';
+        _inputWidget.typeId = '${_movieId}';
 
-          //评论信息
-          _build_comment_infos(_comment),
+        ///弹出键盘处理
+        FocusScope.of(context).requestFocus(_inputWidget.textFiledFocusNode);
+      },
+      child: Container(
+        margin: EdgeInsets.only(
+            left: ScreenUtil().setWidth(20),
+            right: ScreenUtil().setWidth(20),
+            top: ScreenUtil().setHeight(20)),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ///用户信息
+            _user_info_widget(_comment),
 
-          //底部的赞和更多
-          _build_comment_action(_comment),
+            //评论信息
+            _build_comment_infos(_comment),
 
-          //底部的分割线
-          _build_bottom_div(),
-        ],
+            //底部的赞和更多
+            _build_comment_action(_comment, index),
+
+            //底部的分割线
+            _build_bottom_div(),
+          ],
+        ),
       ),
     );
   }
@@ -652,19 +666,26 @@ class _ShortMoviePlayPageState extends State<ShortMoviePlayPage> {
     );
   }
 
-  _build_comment_action(MovieCommentContent commentItem) {
+  _build_comment_action(MovieCommentContent commentItem, int itemIndex) {
     return Padding(
       padding: EdgeInsets.only(top: ScreenUtil().setHeight(20)),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          Container(
-            width: ScreenUtil().setWidth(40),
-            height: ScreenUtil().setWidth(40),
-            child: Image.asset(
-              'src/icons/评论赞.png',
-              color: Colors.black54,
+          GestureDetector(
+            onTap: () {
+              logic.liked_reply(itemIndex).then((value) {
+                setState(() {});
+              });
+            },
+            child: Container(
+              width: ScreenUtil().setWidth(40),
+              height: ScreenUtil().setWidth(40),
+              child: Image.asset(
+                'src/icons/评论赞.png',
+                color: commentItem.liked ? Colors.indigoAccent : Colors.black54,
+              ),
             ),
           ),
           Container(
@@ -729,6 +750,8 @@ class _ShortMoviePlayPageState extends State<ShortMoviePlayPage> {
             Expanded(
               child: GestureDetector(
                 onTap: () {
+                  _inputWidget.typeId = '${_movieId}';
+
                   ///弹出键盘处理
                   FocusScope.of(context)
                       .requestFocus(_inputWidget.textFiledFocusNode);
